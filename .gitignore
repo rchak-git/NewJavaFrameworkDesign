@@ -1,0 +1,24 @@
+# ---- Maven / Java ----
+target/
+*.class
+
+# ---- IntelliJ ----
+.idea/
+*.iml
+out/
+
+# ---- Test reports & artifacts ----
+reports/
+test-output/
+screenshots/
+downloads/
+logs/
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+
+# ---- Env / secrets ----
+.env
+*.key
+*.pem
