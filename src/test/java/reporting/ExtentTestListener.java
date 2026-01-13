@@ -20,6 +20,7 @@ public class ExtentTestListener implements ITestListener {
 
     @Override
     public void onTestSuccess(ITestResult result) {
+
         ExtentTestManager.getTest().pass("Test passed");
     }
 

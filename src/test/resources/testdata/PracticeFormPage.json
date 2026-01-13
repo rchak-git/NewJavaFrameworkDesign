@@ -1,0 +1,18 @@
+{
+  "page": "PracticeFormPage",
+  "data": {
+    "firstName": "Rajib",
+    "lastName": "Chakraborty",
+    "email": "rajib@example.com",
+    "mobileNumber": "1234567890",
+
+    "genderMale": true,
+
+    "hobbySports": true,
+    "hobbyReading": false,
+    "hobbyMusic": true,
+
+    "state": "NCR",
+    "city": "Delhi"
+  }
+}

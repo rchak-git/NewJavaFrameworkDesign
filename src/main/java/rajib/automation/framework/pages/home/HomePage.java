@@ -2,7 +2,6 @@
 package rajib.automation.framework.pages.home;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import rajib.automation.framework.pages.login.LoginPage;
 
 
 // Create HomePage class with constructor, locator example and a sample method

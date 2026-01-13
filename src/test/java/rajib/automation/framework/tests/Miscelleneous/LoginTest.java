@@ -5,10 +5,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
 import rajib.automation.framework.base.BaseTest;
-import rajib.automation.framework.factory.DriverFactory;
-import rajib.automation.framework.pages.home.HomePage;
-import rajib.automation.framework.pages.login.LoginPage;
-import rajib.automation.framework.utils.PageFactory;
 
 public class LoginTest extends BaseTest {
     @Test

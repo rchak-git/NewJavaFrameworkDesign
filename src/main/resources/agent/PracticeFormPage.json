@@ -1,0 +1,131 @@
+{
+  "pageName": "PracticeFormPage",
+  "framework": "BasePage_PageField",
+  "fields": [
+    {
+      "key": "firstName",
+      "fieldType": "TEXTBOX",
+      "logicalName": "First Name",
+      "locator": {
+        "strategy": "id",
+        "value": "firstName"
+      }
+    },
+    {
+      "key": "lastName",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Last Name",
+      "locator": {
+        "strategy": "id",
+        "value": "lastName"
+      }
+    },
+    {
+      "key": "email",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Email",
+      "locator": {
+        "strategy": "id",
+        "value": "userEmail"
+      }
+    },
+    {
+      "key": "mobileNumber",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Mobile Number",
+      "locator": {
+        "strategy": "id",
+        "value": "userNumber"
+      }
+    },
+    {
+      "key": "genderMale",
+      "fieldType": "RADIO",
+      "logicalName": "Gender Male",
+      "locator": {
+        "strategy": "id",
+        "value": "gender-radio-1"
+      }
+    },
+    {
+      "key": "genderFemale",
+      "fieldType": "RADIO",
+      "logicalName": "Gender Female",
+      "locator": {
+        "strategy": "id",
+        "value": "gender-radio-2"
+      }
+    },
+    {
+      "key": "genderOther",
+      "fieldType": "RADIO",
+      "logicalName": "Gender Other",
+      "locator": {
+        "strategy": "id",
+        "value": "gender-radio-3"
+      }
+    },
+    {
+      "key": "hobbySports",
+      "fieldType": "CHECKBOX",
+      "logicalName": "Hobby Sports",
+      "locator": {
+        "strategy": "id",
+        "value": "hobbies-checkbox-1"
+      }
+    },
+    {
+      "key": "hobbyReading",
+      "fieldType": "CHECKBOX",
+      "logicalName": "Hobby Reading",
+      "locator": {
+        "strategy": "id",
+        "value": "hobbies-checkbox-2"
+      }
+    },
+    {
+      "key": "hobbyMusic",
+      "fieldType": "CHECKBOX",
+      "logicalName": "Hobby Music",
+      "locator": {
+        "strategy": "id",
+        "value": "hobbies-checkbox-3"
+      }
+    },
+    {
+      "key": "submit",
+      "fieldType": "ACTION",
+      "logicalName": "Submit",
+      "locator": {
+        "strategy": "id",
+        "value": "submit"
+      }
+    }
+  ],
+  "compositeFields": [
+    {
+      "key": "stateCity",
+      "compositeType": "COMPOSITE_DROPDOWN",
+      "components": [
+        {
+          "key": "state",
+          "fieldType": "DROPDOWN",
+          "logicalName": "State",
+          "locator": {
+            "strategy": "id",
+            "value": "react-select-3-input"
+          }
+        },
+        {
+          "key": "city",
+          "fieldType": "DROPDOWN",
+          "logicalName": "City",
+          "locator": {
+            "strategy": "id",
+            "value": "react-select-4-input"
+          }
+        }
+      ]
+    }
+  ]
+}

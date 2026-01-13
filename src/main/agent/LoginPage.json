@@ -1,0 +1,42 @@
+{
+  "pageName": "LoginPage",
+  "framework": "BasePage_PageField",
+  "fields": [
+    {
+      "key": "username",
+      "fieldType": "TEXTBOX",
+      "logicalName": "username",
+      "locator": {
+        "strategy": "id",
+        "value": "user-name"
+      }
+    },
+    {
+      "key": "password",
+      "fieldType": "TEXTBOX",
+      "logicalName": "password",
+      "locator": {
+        "strategy": "id",
+        "value": "password"
+      }
+    },
+    {
+      "key": "loginButton",
+      "fieldType": "ACTION",
+      "logicalName": null,
+      "locator": {
+        "strategy": "id",
+        "value": "login-button"
+      }
+    },
+    {
+      "key": "loginError",
+      "fieldType": "LABEL",
+      "logicalName": null,
+      "locator": {
+        "strategy": "css",
+        "value": "[data-test='error']"
+      }
+    }
+  ]
+}

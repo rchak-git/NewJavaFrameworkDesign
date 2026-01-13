@@ -1,6 +1,7 @@
 package rajib.automation.framework.utils;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -8,6 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import rajib.automation.framework.factory.DriverFactory;
 
 import java.time.Duration;
+import java.util.function.Supplier;
 
 public final class WaitUtils {
 
@@ -27,6 +29,34 @@ public final class WaitUtils {
     /* -------------------------
        Wait methods
        ------------------------- */
+
+      private static final long POLLING_INTERVAL_MS = 200;
+
+    public static void waitUntil(Supplier<Boolean> condition,
+                                 String failureMessage) {
+
+        long startTime = System.currentTimeMillis();
+
+        while (System.currentTimeMillis() - startTime < DEFAULT_TIMEOUT) {
+            try {
+                if (condition.get()) {
+                    return;
+                }
+            } catch (Exception ignored) {
+                // Ignore transient exceptions (stale element, etc.)
+            }
+
+            try {
+                Thread.sleep(POLLING_INTERVAL_MS);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Wait interrupted", e);
+            }
+        }
+
+        throw new TimeoutException(failureMessage);
+    }
+
 
     public static void waitForTitle(String title) {
         try {
