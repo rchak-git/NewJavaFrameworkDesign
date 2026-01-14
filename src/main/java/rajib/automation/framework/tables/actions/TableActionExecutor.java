@@ -8,9 +8,7 @@ import rajib.automation.framework.codegen.schema.LocatorSchema;
 import rajib.automation.framework.codegen.schema.TableColumnSchema;
 import rajib.automation.framework.codegen.schema.TableSchema;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TableActionExecutor {
 
@@ -74,6 +72,98 @@ public class TableActionExecutor {
 
         return rowData;
     }
+
+    public Optional<Integer> findFirstMatchingRow(
+            Map<String, String> criteria) {
+
+        Objects.requireNonNull(criteria, "criteria cannot be null");
+
+        for (int i = 0; i < getRowCount(); i++) {
+            Map<String, String> row = getRowAsMap(i);
+
+            boolean match = true;
+            for (Map.Entry<String, String> entry : criteria.entrySet()) {
+                String column = entry.getKey();
+                String expected = entry.getValue();
+
+                if (!row.containsKey(column)) {
+                    throw new IllegalArgumentException(
+                            "Unknown column in criteria: " + column
+                    );
+                }
+
+                if (!Objects.equals(row.get(column), expected)) {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (match) {
+                return Optional.of(i);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+
+    public List<Integer> findAllMatchingRows(
+            Map<String, String> criteria) {
+
+        Objects.requireNonNull(criteria, "criteria cannot be null");
+
+        List<Integer> matches = new ArrayList<>();
+
+        for (int i = 0; i < getRowCount(); i++) {
+            Map<String, String> row = getRowAsMap(i);
+
+            boolean match = true;
+            for (Map.Entry<String, String> entry : criteria.entrySet()) {
+                String column = entry.getKey();
+                String expected = entry.getValue();
+
+                if (!row.containsKey(column)) {
+                    throw new IllegalArgumentException(
+                            "Unknown column in criteria: " + column
+                    );
+                }
+
+                if (!Objects.equals(row.get(column), expected)) {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (match) {
+                matches.add(i);
+            }
+        }
+
+        return matches;
+    }
+
+
+    public int findSingleMatchingRow(
+            Map<String, String> criteria) {
+
+        List<Integer> matches = findAllMatchingRows(criteria);
+
+        if (matches.isEmpty()) {
+            throw new IllegalStateException(
+                    "No matching row found for criteria: " + criteria
+            );
+        }
+
+        if (matches.size() > 1) {
+            throw new IllegalStateException(
+                    "Multiple matching rows found (" + matches.size() +
+                            ") for criteria: " + criteria
+            );
+        }
+
+        return matches.get(0);
+    }
+
 
     public void clickCell(int rowIndex, String columnName) {
 

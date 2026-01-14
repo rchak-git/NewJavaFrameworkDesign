@@ -9,13 +9,45 @@
         "genderMale": true,
         "state": "California",
         "city": "San Jose"
-      }
+      },
+
+      "tables": [
+        {
+          "tableKey": "usersTable",
+          "verify": [
+            {
+              "match": {
+                "Name": "Jane Doe",
+                "Status": "INACTIVE"
+              },
+              "assert": {
+                "Role": "USER",
+                "Status": "INACTIVE"
+              }
+            }
+          ]
+        },
+
+        {
+          "tableKey": "usersGrid",
+          "verify": [
+            {
+              "match": {
+                "Name": "Alice"
+              },
+              "assert": {
+                "Status": "CLICKED"
+              }
+            }
+          ]
+        }
+      ]
     },
+
     {
       "name": "Validation Test",
       "data": {
         "firstName": "Rajib",
-
         "subscribe": {
           "populate": true
         },
@@ -24,8 +56,28 @@
         },
         "state": "California",
         "city": "San Jose"
-
       }
-    }
-  ]
+    },
+    {
+      "name": "Smoke Test2",
+      "data": {
+        "firstName": "Rajib",
+        "subscribe": true,
+        "genderMale": true,
+        "state": "California",
+        "city": "San Jose"
+      },
+
+      "expectedTables": {
+        "usersGrid": [
+          {
+            "match": {
+              "Name": "Jane Doe"
+            },
+            "expected": {
+              "Status": "CLICKED"
+            }
+          }
+        ]
+
 }

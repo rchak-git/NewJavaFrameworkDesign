@@ -18,6 +18,7 @@ import rajib.automation.framework.model.PageField;
 import rajib.automation.framework.resolution.ResolvedIntent;
 import rajib.automation.framework.steps.StepLog;
 import rajib.automation.framework.tables.actions.TableActionExecutor;
+import rajib.automation.framework.tables.fluent.TableActions;
 import rajib.automation.framework.tables.reader.TableReader;
 import rajib.automation.framework.utils.RetryUtils;
 import rajib.automation.framework.utils.WaitUtils;
@@ -64,6 +65,16 @@ public abstract class BasePage {
     // ==================================================
     // Helpers
     // ==================================================
+
+    public TableActions tableExecutor(String tableKey) {
+
+        TableSchema schema = getTable(tableKey);
+
+        TableActionExecutor executor =
+                new TableActionExecutor(driver(), schema);
+
+        return new TableActions(executor);
+    }
 
     public TableSchema getTable(String tableKey) {
         TableSchema table = table(tableKey)

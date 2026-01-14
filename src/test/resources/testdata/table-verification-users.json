@@ -1,0 +1,14 @@
+{
+  "tableKey": "usersGrid",
+  "verify": [
+    {
+      "match": {
+        "Name": "Alice"
+      },
+      "assert": {
+        "Status": "CLICKED"
+      }
+    }
+  ]
+}
+
