@@ -1,13 +1,11 @@
-package rajib.automation.framework.tables.verifier;
+package rajib.automation.framework.model.testdata;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 public record AssertionSpec(
         String type,
         String value
 ) {
-
 
     @JsonCreator
     public static AssertionSpec fromString(String value) {
@@ -18,5 +16,3 @@ public record AssertionSpec(
         return (type == null || type.isBlank()) ? "EQUALS" : type;
     }
 }
-
-

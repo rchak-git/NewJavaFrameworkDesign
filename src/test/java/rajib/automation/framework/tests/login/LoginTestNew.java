@@ -1,36 +1,26 @@
 package rajib.automation.framework.tests.login;
 
-import agent.login.LoginAgentExecutor;
-import agent.login.LoginContext;
 import core.context.StepContext;
-import org.openqa.selenium.WebDriver;
-import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import rajib.automation.framework.base.BaseTest;
-import rajib.automation.framework.codegen.loader.PageSchemaLoader;
 import rajib.automation.framework.codegen.schema.LocatorSchema;
-import rajib.automation.framework.codegen.schema.PageSchema;
 import rajib.automation.framework.codegen.schema.TableSchema;
 import rajib.automation.framework.enums.ExecutionPhase;
 import rajib.automation.framework.intent.Intent;
-import rajib.automation.framework.intent.VerifySpec;
 import rajib.automation.framework.loader.JsonTestDataLoader;
-import rajib.automation.framework.model.TestData;
+import rajib.automation.framework.loader.TableVerificationLoader;
+import rajib.automation.framework.model.testdata.RowVerificationSpec;
+import rajib.automation.framework.model.testdata.TableVerificationSpec;
 import rajib.automation.framework.normalization.DefaultTestDataNormalizer;
 import rajib.automation.framework.pages.DemoFormPage;
-import rajib.automation.framework.pages.PracticeFormPage;
-import rajib.automation.framework.pages.TablesPage;
-import rajib.automation.framework.pages.login.LoginPageManual;
 import rajib.automation.framework.resolution.DefaultIntentResolver;
-import rajib.automation.framework.resolution.IntentResolver;
 import rajib.automation.framework.resolution.ResolvedIntent;
 import rajib.automation.framework.steps.Steps;
-import rajib.automation.framework.steps.TableActions;
 import rajib.automation.framework.tables.actions.TableActionExecutor;
 import rajib.automation.framework.tables.reader.TableReader;
-import rajib.automation.framework.tables.verifier.*;
-import rajib.automation.framework.utils.TestDataLoader;
+import rajib.automation.framework.tables.verifier.TableJsonVerifier;
+import rajib.automation.framework.tables.verifier.TableVerifier;
 import reporting.ExtentTestManager;
 
 import java.io.File;
@@ -38,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import static org.testng.AssertJUnit.assertEquals;
 
@@ -237,73 +228,66 @@ public class LoginTestNew extends BaseTest {
         System.out.println("WT-4.2 row matching validated successfully");
     }
 
+
+
     @Test
-    public void debugTableVerificationJsonParsing() {
-
-
-        driver.get(
-                "file:///C:/Users/rchak/OneDrive/Documents/RajibWork/Learning/NewStudyNotes/AgenticAI/demo-form.html"
-        );
+    public void sanity_check_table_verification_loader() {
 
         File json =
-                new File("src/test/resources/testdata/table-verification-users.json");
+                new File("src/test/resources/testdata/DemoFormPage.json");
 
         TableVerificationSpec spec =
-                TableVerificationLoader.load(json);
+                TableVerificationLoader.load(
+                        json,
+                        "Smoke Test",
+                        "link_clicked"
+                );
 
-        assertEquals(spec.tableKey(), "usersTable");
-        assertEquals(spec.verify().size(), 1);
+        // ---- Sanity assertions ----
+        assertEquals(spec.tableKey(), "usersGrid");
+        assertEquals(spec.id(), "link_clicked");
 
-        RowVerificationSpec row = spec.verify().get(0);
+        assertFalse(spec.verify().isEmpty());
 
-        assertEquals(row.match().get("Name"), "Jane Doe");
+       RowVerificationSpec row = spec.verify().get(0);
+
+        assertEquals(row.match().get("Name"), "Alice");
         assertEquals(
                 row.assertThat().get("Status").value(),
-                "INACTIVE"
+                "ACTIVE"
         );
     }
 
 
     @Test
-    public void demoForm_TableActionThenVerify_LinkClicked() {
+    public void demoForm_tableVerification_containsAssertion() {
 
-        // 1️⃣ Navigate
         driver.get(
                 "file:///C:/Users/rchak/OneDrive/Documents/RajibWork/Learning/NewStudyNotes/AgenticAI/demo-form.html"
         );
 
         DemoFormPage page = new DemoFormPage();
 
-        // 2️⃣ --- TABLE ACTION (usersGrid) ---
-        TableActionExecutor gridActions =
-                new TableActionExecutor(
-                        driver,
-                        page.getTable("usersGrid")
+        File json =
+                new File("src/test/resources/testdata/DemoFormPage.json");
+
+        TableVerificationSpec spec =
+                TableVerificationLoader.load(
+                        json,
+                        "demoForm_tableVerification_containsAssertion",
+                        "status_contains_click"
                 );
 
-        // Click the link inside Status column
-        gridActions.clickInCell(
-                0,
-                "Status",
-                new LocatorSchema("css", "a")
-        );
-
-        // 3️⃣ --- LOAD TABLE VERIFICATION JSON (WT-4.3 ONLY) ---
-        File tableJson =
-                new File("src/test/resources/testdata/table-verification-users.json");
-
-        TableVerificationSpec tableSpec =
-                TableVerificationLoader.load(tableJson);
-
-        // 4️⃣ --- VERIFY ---
-        TableActionExecutor exec =
+        TableActionExecutor executor =
                 new TableActionExecutor(
                         driver,
-                        page.getTable(tableSpec.tableKey())
+                        page.getTable(spec.tableKey())
                 );
 
-        new TableJsonVerifier(exec).verify(tableSpec);
+        new TableJsonVerifier(executor).verify(spec);
     }
+
+
 
    /* @Test
     public void demoForm_FluentTableAction_And_Verification() {

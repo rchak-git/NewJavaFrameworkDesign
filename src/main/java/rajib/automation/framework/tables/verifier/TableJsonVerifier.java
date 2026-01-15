@@ -1,5 +1,8 @@
 package rajib.automation.framework.tables.verifier;
 
+import rajib.automation.framework.model.testdata.AssertionSpec;
+import rajib.automation.framework.model.testdata.RowVerificationSpec;
+import rajib.automation.framework.model.testdata.TableVerificationSpec;
 import rajib.automation.framework.tables.actions.TableActionExecutor;
 
 import java.util.Map;
@@ -15,7 +18,7 @@ public class TableJsonVerifier {
     public void verify(TableVerificationSpec spec) {
 
         if (spec.verify() == null || spec.verify().isEmpty()) {
-            throw new IllegalArgumentException(
+            throw new AssertionError(
                     "No verification rules defined for table: " + spec.tableKey()
             );
         }
@@ -47,7 +50,13 @@ public class TableJsonVerifier {
                 String actualValue = actualRow.get(column);
                 String expectedValue = assertion.value();
 
-                switch (assertion.effectiveType()) {
+                // ✅ FIX: resolve type here (not in model)
+                String type =
+                        (assertion.type() == null || assertion.type().isBlank())
+                                ? "EQUALS"
+                                : assertion.type();
+
+                switch (type) {
 
                     case "EQUALS" -> {
                         if (!expectedValue.equals(actualValue)) {
@@ -60,9 +69,19 @@ public class TableJsonVerifier {
                             );
                         }
                     }
-
+                    case "CONTAINS" -> {
+                        if (!actualValue.contains(expectedValue)) {
+                            throw new AssertionError(
+                                    "Table '" + spec.tableKey() + "' verification failed.\n" +
+                                            "Row match criteria: " + rowSpec.match() + "\n" +
+                                            "Column: " + column + "\n" +
+                                            "Expected to contain: " + expectedValue + "\n" +
+                                            "Actual              : " + actualValue
+                            );
+                        }
+                    }
                     default -> throw new IllegalArgumentException(
-                            "Unsupported assertion type: " + assertion.effectiveType()
+                            "Unsupported assertion type: " + type
                     );
                 }
             }

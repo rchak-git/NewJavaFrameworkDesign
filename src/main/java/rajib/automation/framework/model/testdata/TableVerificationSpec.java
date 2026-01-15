@@ -1,9 +1,11 @@
-package rajib.automation.framework.tables.verifier;
+package rajib.automation.framework.model.testdata;
+
+
 
 import java.util.List;
-import java.util.Map;
 
 public record TableVerificationSpec(
         String tableKey,
+        String id,
         List<RowVerificationSpec> verify
-) { }
+) {}

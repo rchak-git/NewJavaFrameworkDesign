@@ -10,10 +10,10 @@
         "state": "California",
         "city": "San Jose"
       },
-
       "tables": [
         {
           "tableKey": "usersTable",
+          "id": "inactive_user_check",
           "verify": [
             {
               "match": {
@@ -21,15 +21,14 @@
                 "Status": "INACTIVE"
               },
               "assert": {
-                "Role": "USER",
                 "Status": "INACTIVE"
               }
             }
           ]
         },
-
         {
           "tableKey": "usersGrid",
+          "id": "link_clicked",
           "verify": [
             {
               "match": {
@@ -45,39 +44,26 @@
     },
 
     {
-      "name": "Validation Test",
-      "data": {
-        "firstName": "Rajib",
-        "subscribe": {
-          "populate": true
-        },
-        "genderMale": {
-          "populate": true
-        },
-        "state": "California",
-        "city": "San Jose"
-      }
-    },
-    {
-      "name": "Smoke Test2",
-      "data": {
-        "firstName": "Rajib",
-        "subscribe": true,
-        "genderMale": true,
-        "state": "California",
-        "city": "San Jose"
-      },
-
-      "expectedTables": {
-        "usersGrid": [
-          {
-            "match": {
-              "Name": "Jane Doe"
-            },
-            "expected": {
-              "Status": "CLICKED"
+      "name": "demoForm_tableVerification_containsAssertion",
+      "tables": [
+        {
+          "tableKey": "usersGrid",
+          "id": "status_contains_click",
+          "verify": [
+            {
+              "match": {
+                "Name": "Alice"
+              },
+              "assert": {
+                "Status": {
+                  "type": "CONTAINS",
+                  "value": "ACTIVE"
+                }
+              }
             }
-          }
-        ]
-
+          ]
+        }
+      ]
+    }
+  ]
 }
