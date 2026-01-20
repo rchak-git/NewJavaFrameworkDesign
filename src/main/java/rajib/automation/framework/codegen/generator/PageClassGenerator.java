@@ -64,7 +64,10 @@ public class PageClassGenerator {
         // ==================================================
         // 2️⃣ Generate composite component PageFields
         // ==================================================
-        for (CompositeFieldSchema composite : schema.compositeFields()) {
+
+        List<CompositeFieldSchema> composites =
+                schema.compositeFields() == null ? List.of() : schema.compositeFields();
+        for (CompositeFieldSchema composite : composites) {
             for (FieldSchema component : composite.components()) {
                 emitPageField(sb, component);
             }
@@ -73,7 +76,7 @@ public class PageClassGenerator {
         // ==================================================
         // 3️⃣ Register composite relationships
         // ==================================================
-        for (CompositeFieldSchema composite : schema.compositeFields()) {
+        for (CompositeFieldSchema composite : composites) {
 
             sb.append("        compositePageFields.put(\"")
                     .append(composite.key())

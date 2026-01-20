@@ -1,0 +1,23 @@
+{
+  "MANDATORY_ONLY": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@testmail.com",
+    "genderMale": "true",
+    "mobileNumber": "9876543210"
+  },
+  "ALL_FIELDS": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@testmail.com",
+    "genderMale": "true",
+    "mobileNumber": "9876543210",
+    "dateOfBirth": "10-Apr-1990",
+    "subjects": "Maths,Physics",
+    "hobbySports": "true",
+    "hobbyReading": "true",
+    "currentAddress": "123 Main Street",
+    "state": "NCR",
+    "city": "Delhi"
+  }
+}

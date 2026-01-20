@@ -16,4 +16,13 @@ public class TestData {
         }
         return data.get(key);
     }
+
+    public Map<String, String> getData() {
+        return data;
+    }
+
+
+    public boolean isEmpty() {
+        return data == null || data.isEmpty();
+    }
 }

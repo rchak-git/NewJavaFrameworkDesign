@@ -1,0 +1,149 @@
+{
+  "pageName": "RegistrationPage",
+  "fields": [
+    {
+      "key": "firstName",
+      "fieldType": "TEXTBOX",
+      "logicalName": "First Name",
+      "locator": {
+        "strategy": "id",
+        "value": "firstName"
+      }
+    },
+    {
+      "key": "lastName",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Last Name",
+      "locator": {
+        "strategy": "id",
+        "value": "lastName"
+      }
+    },
+    {
+      "key": "email",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Email",
+      "locator": {
+        "strategy": "id",
+        "value": "userEmail"
+      }
+    },
+    {
+      "key": "genderMale",
+      "fieldType": "RADIO",
+      "logicalName": "Gender Male",
+      "locator": {
+        "strategy": "id",
+        "value": "gender-radio-1"
+      }
+    },
+    {
+      "key": "genderFemale",
+      "fieldType": "RADIO",
+      "logicalName": "Gender Female",
+      "locator": {
+        "strategy": "id",
+        "value": "gender-radio-2"
+      }
+    },
+    {
+      "key": "genderOther",
+      "fieldType": "RADIO",
+      "logicalName": "Gender Other",
+      "locator": {
+        "strategy": "id",
+        "value": "gender-radio-3"
+      }
+    },
+    {
+      "key": "mobileNumber",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Mobile Number",
+      "locator": {
+        "strategy": "id",
+        "value": "userNumber"
+      }
+    },
+    {
+      "key": "dateOfBirth",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Date of Birth",
+      "locator": {
+        "strategy": "id",
+        "value": "dateOfBirthInput"
+      }
+    },
+    {
+      "key": "subjects",
+      "fieldType": "DROPDOWN",
+      "logicalName": "Subjects",
+      "locator": {
+        "strategy": "id",
+        "value": "subjectsInput"
+      }
+    },
+    {
+      "key": "hobbySports",
+      "fieldType": "CHECKBOX",
+      "logicalName": "Hobby Sports",
+      "locator": {
+        "strategy": "id",
+        "value": "hobbies-checkbox-1"
+      }
+    },
+    {
+      "key": "hobbyReading",
+      "fieldType": "CHECKBOX",
+      "logicalName": "Hobby Reading",
+      "locator": {
+        "strategy": "id",
+        "value": "hobbies-checkbox-2"
+      }
+    },
+    {
+      "key": "hobbyMusic",
+      "fieldType": "CHECKBOX",
+      "logicalName": "Hobby Music",
+      "locator": {
+        "strategy": "id",
+        "value": "hobbies-checkbox-3"
+      }
+    },
+    {
+      "key": "currentAddress",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Current Address",
+      "locator": {
+        "strategy": "id",
+        "value": "currentAddress"
+      }
+    },
+    {
+      "key": "state",
+      "fieldType": "DROPDOWN",
+      "logicalName": "State",
+      "locator": {
+        "strategy": "id",
+        "value": "react-select-3-input"
+      }
+    },
+    {
+      "key": "city",
+      "fieldType": "DROPDOWN",
+      "logicalName": "City",
+      "locator": {
+        "strategy": "id",
+        "value": "react-select-4-input"
+      }
+    },
+    {
+      "key": "submit",
+      "fieldType": "ACTION",
+      "logicalName": "Submit",
+      "locator": {
+        "strategy": "id",
+        "value": "submit"
+      }
+    }
+  ]
+}

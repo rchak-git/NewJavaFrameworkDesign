@@ -142,7 +142,7 @@ public abstract class BasePage {
     }
 
 
-    protected PageField getFieldOrThrow(String fieldKey) {
+    public PageField getFieldOrThrow(String fieldKey) {
         PageField field = pageFields.get(fieldKey);
         if (field == null) {
             throw new IllegalArgumentException(

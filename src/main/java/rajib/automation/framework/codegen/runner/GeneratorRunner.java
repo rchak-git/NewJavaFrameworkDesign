@@ -12,7 +12,7 @@ public class GeneratorRunner {
     public static void main(String[] args) {
 
         PageSchema schema =
-                PageSchemaLoader.loadFromClasspath("agent/DemoFormPage.json");
+                PageSchemaLoader.loadFromClasspath("agent/RegistrationSchemaPage.json");
 
         PageClassGenerator generator = new PageClassGenerator();
         String javaSource = generator.generate(schema);

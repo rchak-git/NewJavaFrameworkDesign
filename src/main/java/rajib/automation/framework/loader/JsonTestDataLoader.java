@@ -71,4 +71,51 @@ public class JsonTestDataLoader implements TestDataLoader {
             );
         }
     }
+
+    public Map<String, Object> loadProfile(String pageName, String profileName) {
+
+        String resourcePath = TESTDATA_BASE_PATH + pageName + ".json";
+
+        try (InputStream is = JsonTestDataLoader.class
+                .getClassLoader()
+                .getResourceAsStream(resourcePath)) {
+
+            if (is == null) {
+                throw new RuntimeException(
+                        "Test data file not found on classpath: " + resourcePath
+                );
+            }
+
+            JsonNode rootNode = objectMapper.readTree(is);
+
+            JsonNode profilesNode = rootNode.get("profiles");
+            if (profilesNode == null || !profilesNode.isObject()) {
+                throw new RuntimeException(
+                        "Invalid test data format: 'profiles' object missing in "
+                                + resourcePath
+                );
+            }
+
+            JsonNode profileNode = profilesNode.get(profileName);
+            if (profileNode == null || !profileNode.isObject()) {
+                throw new RuntimeException(
+                        "Profile '" + profileName + "' not found in " + resourcePath
+                );
+            }
+
+            // Convert JSON object → Map<String, Object>
+            return objectMapper.convertValue(
+                    profileNode,
+                    new TypeReference<Map<String, Object>>() {}
+            );
+
+        } catch (Exception e) {
+            throw new RuntimeException(
+                    "Failed to load test data profile '"
+                            + profileName + "' for page: " + pageName,
+                    e
+            );
+        }
+    }
+
 }
