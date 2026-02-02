@@ -250,10 +250,13 @@ public abstract class BasePage {
                 String inputId = field.getLocatorValue();
                 By labelLocator = By.cssSelector("label[for='" + inputId + "']");
 
-                if (isElementPresent(labelLocator)) {
-                    click(labelLocator);
-                } else {
-                    jsClick(field.getLocator());
+                By target = isElementPresent(labelLocator) ? labelLocator : field.getLocator();
+
+                try {
+                    scrollIntoView(target);
+                    click(target);
+                } catch (ElementClickInterceptedException e) {
+                    jsClick(target);
                 }
                 break;
             }
@@ -265,10 +268,13 @@ public abstract class BasePage {
                 String inputId = field.getLocatorValue();
                 By labelLocator = By.cssSelector("label[for='" + inputId + "']");
 
-                if (isElementVisible(labelLocator)) {
-                    click(labelLocator);
-                } else {
-                    jsClick(field.getLocator());
+                By target = isElementPresent(labelLocator) ? labelLocator : field.getLocator();
+
+                try {
+                    scrollIntoView(target);
+                    click(target);
+                } catch (ElementClickInterceptedException e) {
+                    jsClick(target);
                 }
                 break;
             }
@@ -416,17 +422,27 @@ public abstract class BasePage {
     // ==================================================
     // NEW: Execution Orchestrator
     // ==================================================
-    public void execute(Map<String, ResolvedIntent> resolvedIntents,
-                        ExecutionPhase phase) {
+    public void execute(
+            Map<String, ResolvedIntent> resolvedIntents,
+            ExecutionPhase phase
+    ) {
 
-        Set<String> compositeKeys = getCompositeComponentKeys();
+        Set<String> compositeComponentKeys = getCompositeComponentKeys();
 
+        // 1️⃣ First: populate composite controls
+        if (phase == ExecutionPhase.POPULATE) {
+            for (String compositeKey : compositePageFields.keySet()) {
+                populateComposite(compositeKey, resolvedIntents);
+            }
+        }
+
+        // 2️⃣ Then: populate atomic fields
         for (Map.Entry<String, ResolvedIntent> entry : resolvedIntents.entrySet()) {
 
             String fieldKey = entry.getKey();
 
-            // 🚫 Skip composite components — handled separately
-            if (compositeKeys.contains(fieldKey)) {
+            // 🚫 Skip composite components
+            if (compositeComponentKeys.contains(fieldKey)) {
                 continue;
             }
 
@@ -443,7 +459,10 @@ public abstract class BasePage {
 
                 case VERIFY:
                     if (ri.shouldVerify()) {
-                        verifyField(fieldKey, ri.intent().verify().orElseThrow());
+                        verifyField(
+                                fieldKey,
+                                ri.intent().verify().orElseThrow()
+                        );
                     }
                     break;
             }

@@ -56,7 +56,7 @@ public class IntentDispatcher {
         }
 
         Map<String, ResolvedIntent> resolvedIntents = new LinkedHashMap<>();
-
+        ResolvedIntent ri =null;
         for (Map.Entry<String, String> entry : testData.getData().entrySet()) {
 
             String fieldKey = entry.getKey();
@@ -65,17 +65,23 @@ public class IntentDispatcher {
             // ✅ Populate-only Intent
             Intent intent = new Intent(Optional.of(value), Optional.empty());
 
-            ResolvedIntent ri = new ResolvedIntent(
+             ri = new ResolvedIntent(
                     true,   // shouldPopulate
                     false,  // shouldVerify
                     intent
             );
 
-            resolvedIntents.put(fieldKey, ri);
+            resolvedIntents.put(fieldKey,new ResolvedIntent(
+                    true,   // shouldPopulate
+                    false,  // shouldVerify
+                    intent
+            ));
         }
 
         // ✅ Delegate to BasePage execution
         page.execute(resolvedIntents, ExecutionPhase.POPULATE);
+
+        // To DO - HOW to populate the Composite FIelds ?
 
         // Submit (ACTION)
         page.performAction("submit");

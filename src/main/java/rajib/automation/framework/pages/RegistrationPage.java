@@ -81,16 +81,6 @@ public class RegistrationPage extends BasePage {
                 )
         );
 
-        pageFields.put("dateOfBirth",
-                new PageField(
-                        "dateOfBirth",
-                        "id",
-                        "dateOfBirthInput",
-                        FieldType.TEXTBOX,
-                        "dateOfBirth"
-                )
-        );
-
         pageFields.put("subjects",
                 new PageField(
                         "subjects",
@@ -100,6 +90,48 @@ public class RegistrationPage extends BasePage {
                         "subjects"
                 )
         );
+
+        pageFields.put("currentAddress",
+                new PageField(
+                        "currentAddress",
+                        "id",
+                        "currentAddress",
+                        FieldType.TEXTBOX,
+                        "currentAddress"
+                )
+        );
+
+        pageFields.put("uploadPicture",
+                new PageField(
+                        "uploadPicture",
+                        "id",
+                        "uploadPicture",
+                        FieldType.ACTION,
+                        "uploadPicture"
+                )
+        );
+
+        pageFields.put("submit",
+                new PageField(
+                        "submit",
+                        "id",
+                        "submit",
+                        FieldType.ACTION,
+                        "submit"
+                )
+        );
+
+        pageFields.put("dateOfBirthInput",
+                new PageField(
+                        "dateOfBirthInput",
+                        "id",
+                        "dateOfBirthInput",
+                        FieldType.TEXTBOX,
+                        "dateOfBirthInput"
+                )
+        );
+
+
 
         pageFields.put("hobbySports",
                 new PageField(
@@ -131,16 +163,6 @@ public class RegistrationPage extends BasePage {
                 )
         );
 
-        pageFields.put("currentAddress",
-                new PageField(
-                        "currentAddress",
-                        "id",
-                        "currentAddress",
-                        FieldType.TEXTBOX,
-                        "currentAddress"
-                )
-        );
-
         pageFields.put("state",
                 new PageField(
                         "state",
@@ -161,15 +183,15 @@ public class RegistrationPage extends BasePage {
                 )
         );
 
-        pageFields.put("submit",
-                new PageField(
-                        "submit",
-                        "id",
-                        "submit",
-                        FieldType.ACTION,
-                        "submit"
-                )
-        );
+
+        compositePageFields.put("hobbies", new ArrayList<>());
+        compositePageFields.get("hobbies").add(pageFields.get("hobbySports"));
+        compositePageFields.get("hobbies").add(pageFields.get("hobbyReading"));
+        compositePageFields.get("hobbies").add(pageFields.get("hobbyMusic"));
+
+        compositePageFields.put("stateAndCity", new ArrayList<>());
+        compositePageFields.get("stateAndCity").add(pageFields.get("state"));
+        compositePageFields.get("stateAndCity").add(pageFields.get("city"));
 
     }
 }

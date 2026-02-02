@@ -1,0 +1,33 @@
+{
+  "pageName": "WebTables",
+  "framework": "BasePage_PageField",
+  "fields": [
+    {
+      "key": "addNewRecord",
+      "fieldType": "ACTION",
+      "logicalName": "Add",
+      "locator": {
+        "strategy": "id",
+        "value": "addNewRecordButton"
+      }
+    },
+    {
+      "key": "searchBox",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Search",
+      "locator": {
+        "strategy": "id",
+        "value": "searchBox"
+      }
+    }
+  ],
+  "compositeFields": [],
+  "tables": [
+    {
+      "locator": {
+        "strategy": "css",
+        "value": "div.ReactTable"
+      }
+    }
+  ]
+}
