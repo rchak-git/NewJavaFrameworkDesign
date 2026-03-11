@@ -3,6 +3,7 @@ package rajib.automation.framework.model;
 import org.openqa.selenium.By;
 import rajib.automation.framework.enums.FieldType;
 import rajib.automation.framework.enums.ValidationType;
+import rajib.automation.framework.utils.LocatorUtils;
 
 public class PageField {
 
@@ -73,7 +74,7 @@ public class PageField {
         this.fieldName = fieldName;
         this.locatorStrategy = locatorStrategy;
         this.locatorValue = locatorValue;
-        this.locator = buildBy(locatorStrategy, locatorValue);
+        this.locator = LocatorUtils.buildBy(locatorStrategy, locatorValue);
         this.fieldType = fieldType;
         this.dataKey = dataKey;
 
@@ -84,6 +85,7 @@ public class PageField {
     // --------------------------------------------------
     // Locator factory
     // --------------------------------------------------
+    /*
     private By buildBy(String strategy, String value) {
         switch (strategy.toLowerCase()) {
             case "id":
@@ -98,6 +100,8 @@ public class PageField {
                 );
         }
     }
+
+     */
 
     // --------------------------------------------------
     // Getters

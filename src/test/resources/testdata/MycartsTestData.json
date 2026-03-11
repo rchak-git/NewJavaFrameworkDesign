@@ -1,0 +1,40 @@
+{
+  "TD_VERIFY_CARTPAGE": {
+    "verify": {
+
+      "cartItem": {
+        "ZARA COAT 3": {
+          "verify": {
+            "productTitle": {
+              "type": "TEXT_EQUALS",
+              "expectedValue": "ZARA COAT 3"
+            },
+            "price": {
+              "type": "TEXT_EQUALS",
+              "expectedValue": "$ 11500"
+            },
+            "stockStatus": {
+              "type": "TEXT_EQUALS",
+              "expectedValue": "IN STOCK"
+            }
+          }
+        }
+      },
+
+      "subtotalValue": {
+        "type": "TEXT_EQUALS",
+        "expectedValue": "$11500"
+      },
+
+      "totalValue": {
+        "type": "TEXT_EQUALS",
+        "expectedValue": "$11500"
+      },
+
+      "checkout": {
+        "type": "IS_VISIBLE",
+        "expectedValue": true
+      }
+    }
+  }
+}

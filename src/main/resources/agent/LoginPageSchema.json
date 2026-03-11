@@ -1,0 +1,47 @@
+{
+  "pageName": "Login",
+   "fields": [
+    {
+      "key": "userEmail",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "id",
+        "value": "userEmail"
+      }
+    },
+    {
+      "key": "userPassword",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "id",
+        "value": "userPassword"
+      }
+    },
+    {
+      "key": "login",
+      "fieldType": "ACTION",
+      "locator": {
+        "strategy": "id",
+        "value": "login"
+      }
+    },
+    {
+      "key": "forgotPassword",
+      "fieldType": "ACTION",
+      "locator": {
+        "strategy": "css",
+        "value": "a.forgot-password-link"
+      }
+    },
+    {
+      "key": "registerHere",
+      "fieldType": "ACTION",
+      "locator": {
+        "strategy": "css",
+        "value": "p.login-wrapper-footer-text a.text-reset"
+      }
+    }
+  ],
+  "compositeFields": [],
+  "tables": []
+}

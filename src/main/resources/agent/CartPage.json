@@ -1,0 +1,100 @@
+{
+  "pageName": "MycartsPage",
+   "fields": [
+    {
+      "key": "continueShopping",
+      "fieldType": "ACTION",
+      "locator": {
+        "strategy": "css",
+        "value": "button[routerlink='/dashboard']"
+      }
+    },
+    {
+      "key": "subtotalValue",
+      "fieldType": "STATIC_TEXT",
+      "locator": {
+        "strategy": "xpath",
+        "value": "//li[span[normalize-space()='Subtotal']]/span[@class='value']"
+      }
+    },
+    {
+      "key": "totalValue",
+      "fieldType": "STATIC_TEXT",
+      "locator": {
+        "strategy": "xpath",
+        "value": "//li[span[normalize-space()='Total']]/span[@class='value']"
+      }
+    },
+    {
+      "key": "checkout",
+      "fieldType": "ACTION",
+      "locator": {
+        "strategy": "xpath",
+        "value": "//button[normalize-space()='Checkout']"
+      }
+    }
+  ],
+  "compositeFields": [],
+  "components": [
+    {
+      "key": "cartItem",
+      "rootLocator": {
+        "strategy": "css",
+        "value": "li.items"
+      },
+      "resolutionStrategy": "IDENTIFIED",
+      "identifierKey": "productTitle",
+      "fields": [
+        {
+          "key": "productTitle",
+          "fieldType": "STATIC_TEXT",
+          "locator": {
+            "strategy": "xpath",
+            "value": ".//h3"
+          }
+        },
+        {
+          "key": "itemNumber",
+          "fieldType": "STATIC_TEXT",
+          "locator": {
+            "strategy": "xpath",
+            "value": ".//p[contains(@class,'itemNumber')]"
+          }
+        },
+        {
+          "key": "stockStatus",
+          "fieldType": "STATIC_TEXT",
+          "locator": {
+            "strategy": "xpath",
+            "value": ".//p[contains(@class,'stockStatus')]"
+          }
+        },
+        {
+          "key": "price",
+          "fieldType": "STATIC_TEXT",
+          "locator": {
+            "strategy": "xpath",
+            "value": ".//div[contains(@class,'prodTotal')]//p"
+          }
+        },
+        {
+          "key": "buyNow",
+          "fieldType": "ACTION",
+          "locator": {
+            "strategy": "xpath",
+            "value": ".//button[normalize-space()='Buy Now']"
+          }
+        },
+        {
+          "key": "remove",
+          "fieldType": "ACTION",
+          "locator": {
+            "strategy": "xpath",
+            "value": ".//button[contains(@class,'btn-danger')]"
+          }
+        }
+      ]
+    }
+  ],
+  "tables": []
+}

@@ -1,0 +1,103 @@
+{
+  "pageName": "Register",
+
+  "fields": [
+    {
+      "key": "firstName",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "id",
+        "value": "firstName"
+      }
+    },
+    {
+      "key": "lastName",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "id",
+        "value": "lastName"
+      }
+    },
+    {
+      "key": "userEmail",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "id",
+        "value": "userEmail"
+      }
+    },
+    {
+      "key": "userMobile",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "id",
+        "value": "userMobile"
+      }
+    },
+    {
+      "key": "occupation",
+      "fieldType": "DROPDOWN",
+      "locator": {
+        "strategy": "css",
+        "value": "select[formcontrolname='occupation']"
+      }
+    },
+    {
+      "key": "userPassword",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "id",
+        "value": "userPassword"
+      }
+    },
+    {
+      "key": "confirmPassword",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "id",
+        "value": "confirmPassword"
+      }
+    },
+    {
+      "key": "required",
+      "fieldType": "CHECKBOX",
+      "locator": {
+        "strategy": "css",
+        "value": "input[type='checkbox'][formcontrolname='required']"
+      }
+    },
+    {
+      "key": "login",
+      "fieldType": "ACTION",
+      "locator": {
+        "strategy": "id",
+        "value": "login"
+      }
+    }
+  ],
+  "compositeFields": [
+    {
+      "key": "gender",
+      "compositeType": "MULTI_SELECT_GROUP",
+      "components": [
+        {
+          "key": "male",
+          "fieldType": "RADIO",
+          "locator": {
+            "strategy": "css",
+            "value": "input[type='radio'][value='Male']"
+          }
+        },
+        {
+          "key": "female",
+          "fieldType": "RADIO",
+          "locator": {
+            "strategy": "css",
+            "value": "input[type='radio'][value='Female']"
+          }
+        }
+      ]
+    }
+  ],
+  "tables": []
+}

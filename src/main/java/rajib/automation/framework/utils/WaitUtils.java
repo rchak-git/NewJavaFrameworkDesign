@@ -3,12 +3,14 @@ package rajib.automation.framework.utils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import rajib.automation.framework.factory.DriverFactory;
 
 import java.time.Duration;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public final class WaitUtils {
@@ -18,6 +20,28 @@ public final class WaitUtils {
 
     // Prevent instantiation
     private WaitUtils() {}
+
+    public static <T> T waitUntilReturn(
+            Supplier<T> supplier,
+            Predicate<T> condition
+    ) {
+
+        WebDriverWait wait = new WebDriverWait(
+                DriverFactory.getDriver(),
+                Duration.ofSeconds(10)
+        );
+
+        return wait.until(driver -> {
+            T value = supplier.get();
+
+            if (value != null && condition.test(value)) {
+                return value;
+            }
+
+            return null;
+        });
+    }
+
 
     /* -------------------------
        Internal driver resolver
@@ -69,14 +93,21 @@ public final class WaitUtils {
         }
     }
 
-    public static void waitForVisible(By locator) {
-        new WebDriverWait(driver(), Duration.ofSeconds(DEFAULT_TIMEOUT))
-                .until(ExpectedConditions.visibilityOfElementLocated(locator));
+    public static WebElement waitForVisible(By locator) {
+
+        return new WebDriverWait(
+                driver(),
+                Duration.ofSeconds(DEFAULT_TIMEOUT)
+        ).until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
-    public static void waitForVisible(By locator, int timeoutInSecs) {
-        new WebDriverWait(driver(), Duration.ofSeconds(timeoutInSecs))
-                .until(ExpectedConditions.visibilityOfElementLocated(locator));
+
+    public static WebElement waitForVisible(By locator, int timeoutInSecs) {
+
+        return new WebDriverWait(
+                driver(),
+                Duration.ofSeconds(timeoutInSecs)
+        ).until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
     public static void waitForClickable(By locator) {

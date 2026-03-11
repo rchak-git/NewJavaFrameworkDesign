@@ -17,17 +17,22 @@ public class PageClassGenerator {
         // ==================================================
         // Imports
         // ==================================================
-        sb.append("import rajib.automation.framework.pages.BasePage;\n");
+        sb.append("import rajib.automation.framework.base.BasePage;\n");
         sb.append("import rajib.automation.framework.model.PageField;\n");
         sb.append("import rajib.automation.framework.enums.FieldType;\n");
         sb.append("import java.util.*;\n");
 
-        // ---- Table-related imports (only if tables exist) ----
         if (schema.tables() != null && !schema.tables().isEmpty()) {
             sb.append("import rajib.automation.framework.model.TableSchema;\n");
             sb.append("import rajib.automation.framework.model.TableColumnSchema;\n");
             sb.append("import rajib.automation.framework.model.LocatorSchema;\n");
             sb.append("import rajib.automation.framework.annotations.PageTables;\n");
+        }
+
+        if (schema.components() != null && !schema.components().isEmpty()) {
+            sb.append("import rajib.automation.framework.codegen.schema.ComponentSchema;\n");
+            sb.append("import rajib.automation.framework.codegen.schema.FieldSchema;\n");
+            sb.append("import rajib.automation.framework.model.LocatorSchema;\n");
         }
 
         sb.append("\n");
@@ -39,9 +44,8 @@ public class PageClassGenerator {
                 .append(schema.pageName())
                 .append(" extends BasePage {\n\n");
 
-
         // ==================================================
-        // Table metadata (CLASS-LEVEL)
+        // Table metadata (CLASS LEVEL)
         // ==================================================
         emitTables(sb, schema);
 
@@ -55,18 +59,18 @@ public class PageClassGenerator {
         sb.append("        initSchemas();\n\n");
 
         // ==================================================
-        // 1️⃣ Generate atomic PageFields
+        // 1️⃣ Atomic fields
         // ==================================================
         for (FieldSchema field : schema.fields()) {
             emitPageField(sb, field);
         }
 
         // ==================================================
-        // 2️⃣ Generate composite component PageFields
+        // 2️⃣ Composite fields
         // ==================================================
-
         List<CompositeFieldSchema> composites =
                 schema.compositeFields() == null ? List.of() : schema.compositeFields();
+
         for (CompositeFieldSchema composite : composites) {
             for (FieldSchema component : composite.components()) {
                 emitPageField(sb, component);
@@ -74,7 +78,7 @@ public class PageClassGenerator {
         }
 
         // ==================================================
-        // 3️⃣ Register composite relationships
+        // 3️⃣ Composite relationships
         // ==================================================
         for (CompositeFieldSchema composite : composites) {
 
@@ -94,12 +98,27 @@ public class PageClassGenerator {
             sb.append("\n");
         }
 
+        // ==================================================
+        // 4️⃣ Components  ✅ MOVED INSIDE CONSTRUCTOR
+        // ==================================================
+        if (schema.components() != null && !schema.components().isEmpty()) {
+            for (ComponentSchema component : schema.components()) {
+                emitComponentSchema(sb, component);
+            }
+        }
+
+        // ==================================================
+        // Close constructor
+        // ==================================================
         sb.append("    }\n");
+
+        // ==================================================
+        // Close class
+        // ==================================================
         sb.append("}\n");
 
         return sb.toString();
     }
-
 
     // ==================================================
     // Helper: Emit a PageField safely
@@ -180,6 +199,71 @@ public class PageClassGenerator {
         }
 
         sb.append("    );\n\n");
+    }
+
+
+    private void emitComponentSchema(StringBuilder sb, ComponentSchema component) {
+
+        sb.append("        componentSchemas.put(\"")
+                .append(component.key())
+                .append("\",\n");
+
+        sb.append("                new ComponentSchema(\n");
+
+        // key
+        sb.append("                        \"")
+                .append(component.key())
+                .append("\",\n");
+
+        // root locator
+        sb.append("                        new LocatorSchema(\"")
+                .append(component.root().strategy())
+                .append("\", \"")
+                .append(component.root().value())
+                .append("\"),\n");
+
+        // identifierField (nullable)
+        if (component.identifierField() != null) {
+            sb.append("                        \"")
+                    .append(component.identifierField())
+                    .append("\",\n");
+        } else {
+            sb.append("                        null,\n");
+        }
+
+        // fields list
+        sb.append("                        List.of(\n");
+
+        List<FieldSchema> fields = component.fields();
+        for (int i = 0; i < fields.size(); i++) {
+
+            FieldSchema field = fields.get(i);
+
+            sb.append("                                new FieldSchema(\n");
+            sb.append("                                        \"")
+                    .append(field.key())
+                    .append("\",\n");
+            sb.append("                                        FieldType.")
+                    .append(field.fieldType())
+                    .append(",\n");
+            sb.append("                                        null,\n"); // logicalName NOT emitted inside components
+            sb.append("                                        new LocatorSchema(\"")
+                    .append(field.locator().strategy())
+                    .append("\", \"")
+                    .append(field.locator().value())
+                    .append("\")\n");
+            sb.append("                                )");
+
+            if (i < fields.size() - 1) {
+                sb.append(",");
+            }
+
+            sb.append("\n");
+        }
+
+        sb.append("                        )\n");
+        sb.append("                )\n");
+        sb.append("        );\n\n");
     }
 
 }

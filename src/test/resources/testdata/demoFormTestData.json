@@ -1,0 +1,29 @@
+{
+  "TD_DemoForm_Populate_And_Verify_Table": {
+    "populate": {
+      "firstName": "Rajib",
+      "subscribe": true,
+      "gender": "genderMale",
+      "stateCity": {
+        "state": "California",
+        "city": "San Jose"
+      }
+    },
+    "tables": [
+      {
+        "tableKey": "usersGrid",
+        "verify": [
+          {
+            "match": { "Name": "Alice" },
+            "verify": {
+              "Status": {
+                "type": "TEXT_CONTAINS",
+                "expectedValue": "INACTIVE"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

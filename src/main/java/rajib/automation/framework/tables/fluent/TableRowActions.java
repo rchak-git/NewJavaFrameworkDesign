@@ -57,6 +57,11 @@ public class TableRowActions {
         }
     }
 
+    public void populate(String columnName, Object value) {
+
+        int rowIndex = resolveRowIndex();
+        executor.populateCell(rowIndex, columnName, value);
+    }
 
     // action methods come in Step 2+
 }

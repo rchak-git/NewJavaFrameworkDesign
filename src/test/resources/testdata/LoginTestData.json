@@ -1,0 +1,25 @@
+{
+
+  "TD_Login_DefaultState": {
+    "userEmail": "",
+    "userPassword": ""
+  },
+  "TD_LoginWithRegisteredUser": {
+    "userEmail": "CTX.RUNTIME_EMAIL",
+    "userPassword": "Test#1234",
+    "action": {
+     "login": true
+    }
+  },
+  "TD_InvalidLogin": {
+    "userEmail": "invalid@test.com",
+    "userPassword": "WrongPassword123"
+  },
+    "TD_LoginNewContract": {
+      "populate": {
+        "userEmail": "test@example.com",
+        "userPassword": "Test@123"
+      }
+    }
+
+}

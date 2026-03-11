@@ -12,7 +12,7 @@ public class GeneratorRunner {
     public static void main(String[] args) {
 
         PageSchema schema =
-                PageSchemaLoader.loadFromClasspath("agent/MatomoLoginPageSchema.json");
+                PageSchemaLoader.loadFromClasspath("agent/DemoFormSchema.json");
 
         PageClassGenerator generator = new PageClassGenerator();
         String javaSource = generator.generate(schema);

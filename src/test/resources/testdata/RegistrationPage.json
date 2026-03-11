@@ -18,5 +18,24 @@
     "currentAddress": "123 Main Street",
     "state": "NCR",
     "city": "Delhi"
+  },
+  "TD_ValidRegister": {
+    "verify": {
+      "login": {
+        "isEnabled": false
+      }
+    },
+    "populate": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "userEmail": "john.doex.test1@example.com",
+      "userMobile": "9876543210",
+      "occupation": "Engineer",
+      "gender": "male",
+      "userPassword": "Password@123",
+      "confirmPassword": "Password@123",
+      "required": true
+    }
   }
+
 }

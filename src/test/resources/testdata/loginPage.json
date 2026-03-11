@@ -10,5 +10,17 @@
   "invalidUser": {
     "username": "wrong_user",
     "password": "wrong_pass"
+  },
+  "TD_ValidLogin": {
+    "verify": {
+      "login": {
+        "isEnabled": true
+      }
+    },
+    "populate": {
+      "userEmail": "john.doex.test1@example.com",
+      "userPassword": "Password@123"
+    }
   }
+
 }

@@ -2,8 +2,8 @@ package rajib.automation.framework.utils;
 
 public class RetryUtils {
 
-    private static final int MAX_ATTEMPTS = 3;
-    private static final long SLEEP_MS = 200;
+    private static final int MAX_ATTEMPTS = 10;
+    private static final long SLEEP_MS = 500;
 
     @SafeVarargs
     public static <T extends Exception> void retryOnException(

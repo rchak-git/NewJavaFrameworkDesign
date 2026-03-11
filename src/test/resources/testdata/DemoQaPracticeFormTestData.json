@@ -1,0 +1,15 @@
+{
+  "TC_DEMOQA_FORM_SUBMIT_ONLY": {
+    "populate": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "userEmail": "john.doe@example.com",
+      "genderRadio1": true,
+      "userNumber": "1234567890",
+      "hobbiesCheckbox1": true
+    },
+    "action": {
+      "submit": true
+    }
+  }
+}

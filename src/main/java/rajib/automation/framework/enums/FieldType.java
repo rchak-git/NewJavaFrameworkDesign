@@ -7,5 +7,6 @@ public enum FieldType {
     CHECKBOX,
     RADIO,
     LABEL,
-    ACTION
+    ACTION,
+    STATIC_TEXT
 }

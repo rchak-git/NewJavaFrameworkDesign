@@ -10,6 +10,7 @@ import rajib.automation.framework.codegen.schema.TableSchema;
 
 import java.util.*;
 
+import rajib.automation.framework.model.table.ColumnType;
 public class TableActionExecutor {
 
     private final WebDriver driver;
@@ -240,6 +241,108 @@ public class TableActionExecutor {
         };
     }
 
+
+    private TableColumnSchema resolveColumnSchema(String columnName) {
+
+        if (tableSchema.columns() == null || tableSchema.columns().isEmpty()) {
+            throw new IllegalStateException(
+                    "No column schema defined for table: " + tableSchema.key()
+            );
+        }
+
+        for (TableColumnSchema col : tableSchema.columns()) {
+            if (col.name().equalsIgnoreCase(columnName)) {
+                return col;
+            }
+        }
+
+        throw new IllegalArgumentException(
+                "Unknown column '" + columnName + "' for table: " + tableSchema.key()
+        );
+    }
+    public void populateCell(
+            int rowIndex,
+            String columnName,
+            Object value
+    ) {
+
+        TableColumnSchema column = resolveColumnSchema(columnName);
+
+        WebElement row = getRowElement(rowIndex);
+
+        List<WebElement> cells =
+                row.findElements(toBy(tableSchema.cellLocator()));
+
+        int columnIndex = column.index();
+
+        if (columnIndex < 0 || columnIndex >= cells.size()) {
+            throw new IndexOutOfBoundsException(
+                    "Column index " + columnIndex +
+                            " out of bounds for table '" + tableSchema.key() +
+                            "'. Total cells: " + cells.size()
+            );
+        }
+
+        WebElement cell = cells.get(columnIndex);
+
+        switch (column.type()) {
+
+            case STATIC_TEXT -> throw new IllegalStateException(
+                    "Cannot populate STATIC_TEXT column: " + columnName
+            );
+
+            case TEXTBOX -> {
+                WebElement input =
+                        cell.findElement(By.cssSelector("input"));
+                input.clear();
+                input.sendKeys(String.valueOf(value));
+            }
+
+            case DROPDOWN -> {
+                WebElement selectElement =
+                        cell.findElement(By.cssSelector("select"));
+                new org.openqa.selenium.support.ui.Select(selectElement)
+                        .selectByVisibleText(String.valueOf(value));
+            }
+
+            case CHECKBOX -> {
+                WebElement checkbox =
+                        cell.findElement(By.cssSelector("input[type='checkbox']"));
+
+                boolean desired =
+                        Boolean.parseBoolean(String.valueOf(value));
+
+                if (checkbox.isSelected() != desired) {
+                    checkbox.click();
+                }
+            }
+
+            case ACTION -> {
+                if (Boolean.TRUE.equals(value)) {
+
+                    // Decide what to click inside cell
+                    List<WebElement> buttons = cell.findElements(By.cssSelector("button"));
+                    if (!buttons.isEmpty()) {
+                        buttons.get(0).click();
+                        return;
+                    }
+
+                    List<WebElement> links = cell.findElements(By.cssSelector("a"));
+                    if (!links.isEmpty()) {
+                        links.get(0).click();
+                        return;
+                    }
+
+                    throw new IllegalStateException(
+                            "ACTION column found but no button or link inside cell: " + columnName
+                    );
+                }
+            }
+        }
+    }
+
+
+
     private int resolveColumnIndex(String columnName) {
 
         if (tableSchema.columns() == null || tableSchema.columns().isEmpty()) {
@@ -278,6 +381,29 @@ public class TableActionExecutor {
         }
 
         return rows.get(rowIndex);
+    }
+
+    public WebElement resolveCellElement(
+            int rowIndex,
+            String columnName
+    ) {
+
+        int columnIndex = resolveColumnIndex(columnName);
+
+        WebElement row = getRowElement(rowIndex);
+
+        var cells =
+                row.findElements(toBy(tableSchema.cellLocator()));
+
+        if (columnIndex < 0 || columnIndex >= cells.size()) {
+            throw new IndexOutOfBoundsException(
+                    "Column index " + columnIndex +
+                            " out of bounds for table '" +
+                            tableSchema.key() + "'"
+            );
+        }
+
+        return cells.get(columnIndex);
     }
 
 }

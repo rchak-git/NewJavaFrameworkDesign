@@ -1,13 +1,18 @@
 package rajib.automation.framework.normalization;
 
+
 import rajib.automation.framework.enums.ValidationType;
 import rajib.automation.framework.intent.Intent;
 import rajib.automation.framework.intent.VerifySpec;
+import rajib.automation.framework.td.model.VerifyPhaseHint;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+/*
+DEPRECATED: Will be deleted
+ */
 public class DefaultTestDataNormalizer implements TestDataNormalizer {
 
     @Override
@@ -33,11 +38,16 @@ public class DefaultTestDataNormalizer implements TestDataNormalizer {
 
     private Intent normalizeValue(Object value) {
 
-        // Case 1️⃣ Primitive → populate + verify
+        // Case 1️⃣ Primitive → populate + verify (default EQUALS)
         if (isPrimitive(value)) {
             return new Intent(
                     Optional.of(value),
-                    Optional.of(new VerifySpec(null, value))
+                    Optional.of(new VerifySpec(
+                            ValidationType.TEXT_EQUALS,
+                            value,
+                            null,
+                            null
+                    ))
             );
         }
 
@@ -63,10 +73,15 @@ public class DefaultTestDataNormalizer implements TestDataNormalizer {
 
         if (verify != null) {
 
-            // Case 1️⃣: verify is primitive → default validation
+            // Case 1️⃣: verify is primitive → default EQUALS
             if (isPrimitive(verify)) {
                 verifyOpt = Optional.of(
-                        new VerifySpec(null, verify)
+                        new VerifySpec(
+                                ValidationType.TEXT_EQUALS,
+                                verify,
+                                null,
+                                null
+                        )
                 );
             }
 
@@ -82,13 +97,18 @@ public class DefaultTestDataNormalizer implements TestDataNormalizer {
                     );
                 }
 
-                ValidationType validationType = null;
-                if (typeObj != null) {
-                    validationType = ValidationType.valueOf(typeObj.toString());
-                }
+                ValidationType validationType =
+                        typeObj != null
+                                ? ValidationType.valueOf(typeObj.toString())
+                                : ValidationType.TEXT_EQUALS;
 
                 verifyOpt = Optional.of(
-                        new VerifySpec(validationType, valueObj)
+                        new VerifySpec(
+                                validationType,
+                                valueObj,
+                                null,
+                                null
+                        )
                 );
             }
 
@@ -107,7 +127,6 @@ public class DefaultTestDataNormalizer implements TestDataNormalizer {
 
         return new Intent(populateOpt, verifyOpt);
     }
-
 
     private boolean isPrimitive(Object value) {
         return value instanceof String

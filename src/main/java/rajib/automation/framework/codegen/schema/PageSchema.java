@@ -7,5 +7,6 @@ public record PageSchema(
         String framework,
         List<FieldSchema> fields,
         List<CompositeFieldSchema> compositeFields,
-        List<TableSchema> tables
+        List<TableSchema> tables,
+        List<ComponentSchema> components // ✅ NEW (optional)
 ) {}

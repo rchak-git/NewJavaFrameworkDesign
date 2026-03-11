@@ -1,0 +1,115 @@
+{
+  "pageName": "DashboardPage",
+   "fields": [
+    {
+      "key": "check",
+      "fieldType": "CHECKBOX",
+      "locator": {
+        "strategy": "id",
+        "value": "check"
+      }
+    },
+    {
+      "key": "productName",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "css",
+        "value": "input[formcontrolname='productName']"
+      }
+    },
+    {
+      "key": "minPrice",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "css",
+        "value": "input[formcontrolname='minPrice']"
+      }
+    },
+    {
+      "key": "maxPrice",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "css",
+        "value": "input[formcontrolname='maxPrice']"
+      }
+    },
+    {
+      "key": "productName_2",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "css",
+        "value": "section#sidebar input[formcontrolname='productName']"
+      }
+    },
+    {
+      "key": "minPrice_2",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "css",
+        "value": "section#sidebar input[formcontrolname='minPrice']"
+      }
+    },
+    {
+      "key": "maxPrice_2",
+      "fieldType": "TEXTBOX",
+      "locator": {
+        "strategy": "css",
+        "value": "section#sidebar input[formcontrolname='maxPrice']"
+      }
+    },
+    {
+      "key": "res",
+      "fieldType": "STATIC_TEXT",
+      "locator": {
+        "strategy": "id",
+        "value": "res"
+      }
+    }
+  ],
+  "compositeFields": [],
+  "components": [
+    {
+      "key": "productCard",
+      "root": {
+        "strategy": "css",
+        "value": "div.card-body"
+      },
+      "identifierField": "title",
+      "fields": [
+        {
+          "key": "title",
+          "fieldType": "STATIC_TEXT",
+          "locator": {
+            "strategy": "css",
+            "value": "h5 b"
+          }
+        },
+        {
+          "key": "price",
+          "fieldType": "STATIC_TEXT",
+          "locator": {
+            "strategy": "css",
+            "value": "div.text-muted"
+          }
+        },
+        {
+          "key": "view",
+          "fieldType": "ACTION",
+          "locator": {
+            "strategy": "xpath",
+            "value": ".//button[contains(.,'View')]"
+          }
+        },
+        {
+          "key": "addToCart",
+          "fieldType": "ACTION",
+          "locator": {
+            "strategy": "xpath",
+            "value": ".//button[contains(.,'Add To Cart')]"
+          }
+        }
+      ]
+    }
+  ],
+  "tables": []
+}

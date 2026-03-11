@@ -3,11 +3,11 @@ package rajib.automation.framework.base;
 import agent.FailureAnalysisAgent;
 import core.context.FailureContext;
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import rajib.automation.framework.codegen.schema.CompositeFieldSchema;
-import rajib.automation.framework.codegen.schema.FieldSchema;
-import rajib.automation.framework.codegen.schema.PageSchema;
+import rajib.automation.framework.codegen.schema.*;
 import rajib.automation.framework.codegen.validation.TableSchemaValidator;
 import rajib.automation.framework.enums.ExecutionPhase;
 import rajib.automation.framework.enums.FieldType;
@@ -15,21 +15,31 @@ import rajib.automation.framework.enums.ValidationType;
 import rajib.automation.framework.factory.DriverFactory;
 import rajib.automation.framework.intent.VerifySpec;
 import rajib.automation.framework.model.PageField;
+import rajib.automation.framework.resolution.ComponentResolver;
 import rajib.automation.framework.resolution.ResolvedIntent;
 import rajib.automation.framework.steps.StepLog;
 import rajib.automation.framework.tables.actions.TableActionExecutor;
 import rajib.automation.framework.tables.fluent.TableActions;
 import rajib.automation.framework.tables.reader.TableReader;
+import rajib.automation.framework.utils.LocatorUtils;
 import rajib.automation.framework.utils.RetryUtils;
 import rajib.automation.framework.utils.WaitUtils;
+import rajib.automation.framework.v2.context.RuntimeContext;
+import rajib.automation.framework.v2.resolver.ElementResolver;
+import rajib.automation.framework.v2.resolver.PageResolver;
+import rajib.automation.framework.v2.runtime.RuntimeValueResolver;
+import rajib.automation.framework.v3.verify.VerificationExecutor;
 import reporting.ReportManager;
 import org.openqa.selenium.NoSuchElementException;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.*;
 import rajib.automation.framework.introspection.PageTableExtractor;
-import rajib.automation.framework.codegen.schema.TableSchema;
+
+import static rajib.automation.framework.utils.LocatorUtils.buildBy;
+
 
 public abstract class BasePage {
 
@@ -41,9 +51,275 @@ public abstract class BasePage {
         return DriverFactory.getDriver();
     }
 
-    protected BasePage() {
+    protected ElementResolver resolver;
 
-       }
+    protected BasePage() {
+        this.resolver = new PageResolver(); // default page-level resolver
+        this.initGlobalComponents();
+    }
+
+    protected BasePage(ElementResolver resolver) {
+        this.resolver = resolver;
+            this.initGlobalComponents();
+    }
+
+
+    protected Map<String, ComponentSchema> componentSchemas = new LinkedHashMap<>();
+
+    public Map<String, ComponentSchema> getComponentSchemas() {
+        return componentSchemas;
+    }
+
+    protected Map<String, TableSchema> tableSchemaMap() {
+        return Map.of(); // default: no tables on this page
+    }
+    public final TableSchema getTableSchemaOrThrow(String tableKey) {
+        TableSchema schema = tableSchemaMap().get(tableKey);
+        if (schema == null) {
+            throw new IllegalArgumentException("No TableSchema registered for key: " + tableKey);
+        }
+        return schema;
+    }
+    protected boolean isComponentKey(String key) {
+        return componentSchemas.containsKey(key);
+    }
+
+    protected void verifyComponentField(
+            String componentKey,
+            WebElement root,
+            FieldSchema fieldSchema,
+            VerifySpec verifySpec
+    ) {
+        By by = buildBy(
+                fieldSchema.locator().strategy(),
+                fieldSchema.locator().value()
+        );
+
+        WebElement element = root.findElement(by);
+
+        applyVerification(
+                fieldSchema.key(),
+                fieldSchema.fieldType(),
+                element,
+                verifySpec
+        );
+    }
+
+
+    protected void waitForSpinnerToDisappear() {
+
+        WebDriverWait wait = new WebDriverWait(this.driver(), Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(
+                By.cssSelector(".ngx-spinner-overlay")
+        ));
+    }
+
+    protected void initGlobalComponents() {
+
+        componentSchemas.put("headerNav",
+                new ComponentSchema(
+                        "headerNav",
+                        new LocatorSchema("css", "nav"),
+                        "SINGLE",
+                        null,
+                        List.of(
+                                new FieldSchema(
+                                        "home",
+                                        FieldType.ACTION,
+                                        null,
+                                        new LocatorSchema("xpath", ".//button[normalize-space()='HOME']")
+                                ),
+                                new FieldSchema(
+                                        "orders",
+                                        FieldType.ACTION,
+                                        null,
+                                        new LocatorSchema("xpath", ".//button[normalize-space()='ORDERS']")
+                                ),
+                                new FieldSchema(
+                                        "cart",
+                                        FieldType.ACTION,
+                                        null,
+                                        new LocatorSchema("xpath", ".//button[contains(.,'Cart')]")
+                                ),
+                                new FieldSchema(
+                                        "signOut",
+                                        FieldType.ACTION,
+                                        null,
+                                        new LocatorSchema("xpath", ".//button[normalize-space()='Sign Out']")
+                                )
+                        )
+                )
+        );
+    }
+
+    public ComponentSchema getComponentOrThrow(String key) {
+        ComponentSchema schema = componentSchemas.get(key);
+        if (schema == null) {
+            throw new IllegalArgumentException("No ComponentSchema registered for key: " + key);
+        }
+        return schema;
+    }
+
+    private void handleComponentBlock(String componentKey, Object value) {
+
+        // Step 1: Validate component block must be a Map
+        if (!(value instanceof Map<?, ?>)) {
+            throw new IllegalArgumentException(
+                    "Component block must be a Map of identifier → field map. Component: "
+                            + componentKey
+            );
+        }
+
+        Map<?, ?> componentInstances = (Map<?, ?>) value;
+
+        // Step 2: Validate at least one instance provided
+        if (componentInstances.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "Component block is empty for component: " + componentKey
+            );
+        }
+
+        ComponentSchema schema = getComponentOrThrow(componentKey);
+
+        // Step 3: Iterate over each identifier entry
+        for (Map.Entry<?, ?> instanceEntry : componentInstances.entrySet()) {
+
+            String identifierValue = String.valueOf(instanceEntry.getKey());
+            Object fieldsObj = instanceEntry.getValue();
+
+            // Step 4: Validate inner field map
+            if (!(fieldsObj instanceof Map<?, ?>)) {
+                throw new IllegalArgumentException(
+                        "Component instance must contain field map. Component: "
+                                + componentKey + ", identifier: " + identifierValue
+                );
+            }
+
+            Map<?, ?> fieldMap = (Map<?, ?>) fieldsObj;
+
+            if (fieldMap.isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Field map is empty for component: "
+                                + componentKey + ", identifier: " + identifierValue
+                );
+            }
+
+            WebElement root = resolveComponentRoot(schema, identifierValue);
+
+            // 🔹 Swap resolver to component-scoped resolver
+            ElementResolver originalResolver = this.resolver;
+            this.resolver = new ComponentResolver(root);
+
+            try {
+                for (Map.Entry<?, ?> fieldEntry : fieldMap.entrySet()) {
+
+                    String fieldKey = String.valueOf(fieldEntry.getKey());
+                    Object fieldValue = fieldEntry.getValue();
+
+                    // ✅ ONLY populate logic
+                    populateField(fieldKey, fieldValue);
+                }
+            } finally {
+                // Always restore original resolver
+                this.resolver = originalResolver;
+            }
+        }
+    }
+
+    private void handleComponentVerificationBlock(String componentKey, Object value) {
+
+        if (!(value instanceof Map<?, ?> componentInstances)) {
+            throw new IllegalArgumentException(
+                    "Component verification block must be Map. Component: " + componentKey
+            );
+        }
+
+        ComponentSchema schema = getComponentOrThrow(componentKey);
+
+        for (Map.Entry<?, ?> instanceEntry : componentInstances.entrySet()) {
+
+            String identifierValue = String.valueOf(instanceEntry.getKey());
+            Object innerObj = instanceEntry.getValue();
+
+            if (!(innerObj instanceof Map<?, ?> innerMap)) {
+                throw new IllegalArgumentException(
+                        "Component identifier block must be Map. Component: "
+                                + componentKey + ", identifier: " + identifierValue
+                );
+            }
+
+            Object verifyBlockObj = innerMap.get("verify");
+
+            if (verifyBlockObj == null) {
+                continue; // nothing to verify for this identifier
+            }
+
+            if (!(verifyBlockObj instanceof Map<?, ?> verifyMap)) {
+                throw new IllegalArgumentException(
+                        "Verify block must be Map. Component: "
+                                + componentKey + ", identifier: " + identifierValue
+                );
+            }
+
+            WebElement root = resolveComponentRoot(schema, identifierValue);
+
+            handleComponentVerification(
+                    schema,
+                    root,
+                    identifierValue,
+                    verifyMap
+            );
+        }
+    }
+
+    private void handleComponentVerification(
+            ComponentSchema schema,
+            WebElement root,
+            String identifierValue,
+            Map<?, ?> verifyMap
+    ) {
+
+        for (Map.Entry<?, ?> verifyEntry : verifyMap.entrySet()) {
+
+            String fieldKey = String.valueOf(verifyEntry.getKey());
+            Object verifySpecObj = verifyEntry.getValue();
+
+            if (!(verifySpecObj instanceof Map<?, ?> specMap)) {
+                throw new IllegalArgumentException(
+                        "Verification spec must be a Map. Component: "
+                                + schema.key() + ", identifier: " + identifierValue
+                );
+            }
+
+            Object typeObj = specMap.get("type");
+            if (typeObj == null) {
+                throw new IllegalArgumentException(
+                        "VerifySpec.type is required. Component: "
+                                + schema.key() + ", identifier: " + identifierValue
+                                + ", field: " + fieldKey
+                );
+            }
+
+            String typeStr = String.valueOf(typeObj);
+            Object expectedValue = specMap.get("expectedValue");
+
+            ValidationType validationType = ValidationType.valueOf(typeStr);
+
+            VerifySpec verifySpec = new VerifySpec(validationType, expectedValue);
+
+            // ✅ NEW: resolve the component FieldSchema by key
+            FieldSchema fieldSchema = schema.fieldOrThrow(fieldKey);
+
+            // ✅ Correct signature
+            verifyComponentField(
+                    schema.key(),
+                    root,
+                    fieldSchema,
+                    verifySpec
+            );
+        }
+    }
 
     protected final void initSchemas() {
 
@@ -154,8 +430,7 @@ public abstract class BasePage {
 
     protected WebElement resolveElement(By locator) {
         try {
-            WaitUtils.waitForVisible(locator);
-            return driver().findElement(locator);
+            return resolver.resolve(locator);
         } catch (Exception e) {
 
             FailureContext context = new FailureContext(
@@ -177,7 +452,68 @@ public abstract class BasePage {
         }
     }
 
+    protected void performComponentAction(
+            String componentKey,
+            WebElement root,
+            String fieldKey) {
 
+        ComponentSchema schema = componentSchemas.get(componentKey);
+
+        if (schema == null) {
+            throw new RuntimeException("Component not registered: " + componentKey);
+        }
+
+        FieldSchema fieldSchema = schema.fields()
+                .stream()
+                .filter(f -> f.key().equals(fieldKey))
+                .findFirst()
+                .orElseThrow(() ->
+                        new RuntimeException("No action field found with key: " + fieldKey)
+                );
+
+        ElementResolver originalResolver = this.resolver;
+        this.resolver = new ComponentResolver(root);
+
+        try {
+            By by = buildBy(
+                    fieldSchema.locator().strategy(),
+                    fieldSchema.locator().value()
+            );
+
+            waitForSpinnerToDisappear();
+            WebElement element = resolver.resolve(by);
+          //  WebDriverWait wait = new WebDriverWait(driver(), Duration.ofSeconds(10));
+          //  wait.until(ExpectedConditions.elementToBeClickable(element));
+            click(element);
+
+        } finally {
+            this.resolver = originalResolver;
+        }
+    }
+
+    public void performComponentAction(String componentKey, String fieldKey) {
+
+        ComponentSchema schema = componentSchemas.get(componentKey);
+
+        if (schema == null) {
+            throw new RuntimeException("Component not registered: " + componentKey);
+        }
+
+        if (!schema.isSingle()) {
+            throw new IllegalStateException(
+                    "Component requires identifier: " + componentKey
+            );
+        }
+
+        By rootBy = buildBy(
+                schema.root().strategy(),
+                schema.root().value()
+        );
+
+        WebElement root = resolver.resolve(rootBy);
+
+        performComponentAction(componentKey, root, fieldKey);
+    }
 
 
     // ==================================================
@@ -208,15 +544,194 @@ public abstract class BasePage {
 
 
     protected void scrollIntoView(By locator) {
-        WebElement element = driver().findElement(locator);
+        WebElement element = resolver.resolve(locator);
         ((JavascriptExecutor) driver()).executeScript(
                 "arguments[0].scrollIntoView({block:'center'});",
                 element
         );
     }
 
+    protected WebElement resolveComponentRoot(
+            String componentKey,
+            String identifierValue
+    ) {
 
-    protected void populateField(String fieldKey, Object value) {
+        ComponentSchema schema = componentSchemas.get(componentKey);
+
+        if (schema == null) {
+            throw new RuntimeException("Component not registered: " + componentKey);
+        }
+
+        return resolveComponentRoot(schema, identifierValue);
+    }
+
+    protected WebElement resolveComponentRoot(
+            ComponentSchema schema,
+            String identifierValue
+    ) {
+
+        // Step 1: Build By for root locator
+        By rootBy = buildBy(schema.root());
+       WaitUtils.waitForVisible(rootBy,10);
+        List<WebElement> roots = driver().findElements(rootBy);
+
+        if (roots.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "No component roots found for component: " + schema.key()
+            );
+        }
+
+        // Step 2: Ensure identifierField is defined
+        String identifierFieldKey = schema.identifierField();
+
+        if (identifierFieldKey == null) {
+            throw new IllegalStateException(
+                    "identifierField is required for identifier-based resolution. Component: "
+                            + schema.key()
+            );
+        }
+
+        // Step 3: Get identifier field schema
+        FieldSchema identifierField = schema.fieldOrThrow(identifierFieldKey);
+
+        By identifierBy = buildBy(identifierField.locator());
+
+        // Step 4: Iterate roots and match identifier text
+        for (WebElement root : roots) {
+
+            try {
+                WebElement identifierElement = root.findElement(identifierBy);
+                String actualText = identifierElement.getText();
+                System.out.println("Comparing: [" + actualText + "] with [" + identifierValue + "]");
+                if (actualText != null &&
+                        actualText.trim().equals(identifierValue.trim())) {
+
+                    return root;
+                }
+
+            } catch (NoSuchElementException ignored) {
+                // This root does not contain identifier field — skip
+            }
+        }
+
+        // Step 5: If no match found
+        throw new IllegalArgumentException(
+                "Component instance not found. component=" + schema.key()
+                        + ", identifier=" + identifierValue
+        );
+    }
+
+
+    public void populate(Map<String, Object> testData) {
+
+        if (testData == null || testData.isEmpty()) {
+            return;
+        }
+
+        System.out.println("Incoming keys: " + testData.keySet());
+        for (Map.Entry<String, Object> entry : testData.entrySet()) {
+
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (isComponentKey(key)) {
+                handleComponentBlock(key, value);
+            } else {
+                populateField(key, value);
+            }
+        }
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public void populate(Map<String, Object> testData, RuntimeContext context) {
+
+        if (testData == null || testData.isEmpty()) {
+            return;
+        }
+
+        RuntimeValueResolver resolver = new RuntimeValueResolver();
+
+        for (Map.Entry<String, Object> entry : testData.entrySet()) {
+
+            String key = entry.getKey();
+            Object rawValue = entry.getValue();
+            Object resolvedValue = rawValue;
+
+            // -------------------------------------------------
+            // Resolve runtime placeholders (only for String)
+            // -------------------------------------------------
+            if (rawValue instanceof String str) {
+                resolvedValue = resolver.resolve(str, context);
+            }
+
+            // -------------------------------------------------
+            // 🔥 Composite Handling
+            // -------------------------------------------------
+            if (compositePageFields.containsKey(key)) {
+
+                List<PageField> compositeFields = compositePageFields.get(key);
+
+                if (compositeFields == null || compositeFields.isEmpty()) {
+                    throw new IllegalArgumentException(
+                            "Composite key '" + key + "' has no registered fields"
+                    );
+                }
+
+                // ---------------------------------------------
+                // Case 1: RADIO group (value = selected key)
+                // ---------------------------------------------
+                if (resolvedValue instanceof String selectedKey) {
+
+                    PageField selectedField = pageFields.get(selectedKey);
+
+                    if (selectedField == null) {
+                        throw new IllegalArgumentException(
+                                "Invalid selection '" + selectedKey +
+                                        "' for composite '" + key + "'"
+                        );
+                    }
+
+                    populateField(selectedKey, true);
+                    continue;
+                }
+
+                // ---------------------------------------------
+                // Case 2: Composite dropdown (value = Map)
+                // ---------------------------------------------
+                if (resolvedValue instanceof Map<?, ?> map) {
+
+                    Map<String, Object> subValues = (Map<String, Object>) map;
+
+                    for (Map.Entry<String, Object> subEntry : subValues.entrySet()) {
+
+                        String subKey = subEntry.getKey();
+                        Object subRawValue = subEntry.getValue();
+                        Object subResolvedValue = subRawValue;
+
+                        if (subRawValue instanceof String subStr) {
+                            subResolvedValue = resolver.resolve(subStr, context);
+                        }
+
+                        populateField(subKey, subResolvedValue);
+                    }
+
+                    continue;
+                }
+
+                throw new IllegalArgumentException(
+                        "Unsupported value type for composite '" + key +
+                                "': " + resolvedValue.getClass().getSimpleName()
+                );
+            }
+
+            // -------------------------------------------------
+            // Normal atomic field handling
+            // -------------------------------------------------
+            populateField(key, resolvedValue);
+        }
+    }
+    public void populateField(String fieldKey, Object value) {
 
 
         StepLog.info(
@@ -247,10 +762,7 @@ public abstract class BasePage {
                 boolean shouldCheck = Boolean.parseBoolean(resolvedValue);
                 if (!shouldCheck) return;
 
-                String inputId = field.getLocatorValue();
-                By labelLocator = By.cssSelector("label[for='" + inputId + "']");
-
-                By target = isElementPresent(labelLocator) ? labelLocator : field.getLocator();
+                By target = field.getLocator();
 
                 try {
                     scrollIntoView(target);
@@ -258,17 +770,13 @@ public abstract class BasePage {
                 } catch (ElementClickInterceptedException e) {
                     jsClick(target);
                 }
-                break;
             }
-
+            break;
             case RADIO: {
                 boolean select = Boolean.parseBoolean(resolvedValue);
                 if (!select) return;
 
-                String inputId = field.getLocatorValue();
-                By labelLocator = By.cssSelector("label[for='" + inputId + "']");
-
-                By target = isElementPresent(labelLocator) ? labelLocator : field.getLocator();
+                By target = field.getLocator();
 
                 try {
                     scrollIntoView(target);
@@ -278,7 +786,9 @@ public abstract class BasePage {
                 }
                 break;
             }
-
+            case STATIC_TEXT:
+                // STATIC_TEXT is read-only. Do nothing during populate.
+                return;
             default:
                 throw new UnsupportedOperationException(
                         "Unsupported FieldType: " + field.getFieldType()
@@ -286,135 +796,93 @@ public abstract class BasePage {
         }
     }
 
-    protected void verifyField(String fieldKey, VerifySpec verifySpec) {
 
-        PageField field = getFieldOrThrow(fieldKey);
+    public void verify(Map<String, VerifySpec> verifySpecs) {
 
-        // Skip actions
-        if (field.getFieldType() == FieldType.ACTION) {
+        if (verifySpecs == null || verifySpecs.isEmpty()) {
             return;
         }
 
-        ValidationType type =
-                verifySpec != null ? verifySpec.type() : null;
+        for (Map.Entry<String, VerifySpec> entry : verifySpecs.entrySet()) {
 
-        Object expectedObj =
-                verifySpec != null ? verifySpec.expectedValue() : null;
+            String key = entry.getKey();
+            VerifySpec verifySpec = entry.getValue();
 
-        if (type == null) {
-            type = ValidationType.TEXT_EQUALS;
+            // -------------------------------------------------
+            // 1️⃣ Component Verification
+            // -------------------------------------------------
+            if (isComponentKey(key)) {
+
+                Object raw = verifySpec.expectedValue();
+
+                if (!(raw instanceof Map<?, ?> componentBlock)) {
+                    throw new IllegalArgumentException(
+                            "Component verification block must be Map. Component: " + key
+                    );
+                }
+
+                handleComponentVerificationBlock(
+                        key,
+                        (Map<String, Object>) componentBlock
+                );
+
+                continue;
+            }
+
+
+            // -------------------------------------------------
+            // 2️⃣ Normal Page Field Verification
+            // -------------------------------------------------
+
+            PageField field = getFieldOrThrow(key);
+
+            verifyField(key, verifySpec);
         }
+    }
+
+    public void verifyField(String fieldKey, VerifySpec verifySpec) {
+
+        PageField field = getFieldOrThrow(fieldKey);
 
         By locator = field.getLocator();
-        String expected =
-                expectedObj == null ? null : String.valueOf(expectedObj);
 
-        switch (type) {
+        WebElement el = WaitUtils.waitForVisible(locator);
 
-            case TEXT_EQUALS: {
+        applyVerification(
+                fieldKey,
+                field.getFieldType(),
+                el,
+                verifySpec
+        );
+    }
 
-                // 🔑 React-safe wait
-                WaitUtils.waitUntil(() -> {
-                    WebElement el = driver().findElement(locator);
-                    String actual = el.getAttribute("value");
-                    return expected != null && expected.equals(actual);
-                }, "Waiting for value to match for field: " + field.getFieldName());
 
-                String actual =
-                        driver().findElement(locator).getAttribute("value");
+    private void applyVerification(
+            String fieldKey,
+            FieldType fieldType,
+            WebElement el,
+            VerifySpec verifySpec
+    ) {
+        VerificationExecutor.verifyElement(
+                fieldKey,
+                fieldType,
+                el,
+                verifySpec
+        );
+    }
 
-                StepLog.info(
-                        "VERIFY TEXT_EQUALS [" + field.getFieldName() + "]"
-                                + " | expected=" + expected
-                                + " | actual=" + actual
-                );
+    private String extractActualValue(FieldType fieldType, WebElement el) {
 
-                Assert.assertEquals(
-                        actual,
-                        expected,
-                        "Text mismatch for field: " + field.getFieldName()
-                );
-                break;
-            }
+        switch (fieldType) {
 
-            case TEXT_CONTAINS: {
+            case TEXTBOX:
+                return el.getAttribute("value");
 
-                WaitUtils.waitUntil(() -> {
-                    WebElement el = driver().findElement(locator);
-                    String actual = el.getAttribute("value");
-                    return actual != null && actual.contains(expected);
-                }, "Waiting for value to contain expected text for field: "
-                        + field.getFieldName());
-
-                String actual =
-                        driver().findElement(locator).getAttribute("value");
-
-                StepLog.info(
-                        "VERIFY TEXT_CONTAINS [" + field.getFieldName() + "]"
-                                + " | expected fragment=" + expected
-                                + " | actual=" + actual
-                );
-
-                Assert.assertTrue(
-                        actual.contains(expected),
-                        "Expected text not found for field: "
-                                + field.getFieldName()
-                );
-                break;
-            }
-
-            case IS_VISIBLE: {
-                WebElement el = driver().findElement(locator);
-
-                StepLog.info(
-                        "VERIFY IS_VISIBLE [" + field.getFieldName() + "]"
-                                + " | displayed=" + el.isDisplayed()
-                );
-
-                Assert.assertTrue(el.isDisplayed());
-                break;
-            }
-
-            case IS_NOT_VISIBLE: {
-                WebElement el = driver().findElement(locator);
-
-                StepLog.info(
-                        "VERIFY IS_NOT_VISIBLE [" + field.getFieldName() + "]"
-                                + " | displayed=" + el.isDisplayed()
-                );
-
-                Assert.assertFalse(el.isDisplayed());
-                break;
-            }
-
-            case IS_ENABLED: {
-                WebElement el = driver().findElement(locator);
-
-                StepLog.info(
-                        "VERIFY IS_ENABLED [" + field.getFieldName() + "]"
-                                + " | enabled=" + el.isEnabled()
-                );
-
-                Assert.assertTrue(el.isEnabled());
-                break;
-            }
-
-            case IS_DISABLED: {
-                WebElement el = driver().findElement(locator);
-
-                StepLog.info(
-                        "VERIFY IS_DISABLED [" + field.getFieldName() + "]"
-                                + " | enabled=" + el.isEnabled()
-                );
-
-                Assert.assertFalse(el.isEnabled());
-                break;
-            }
+            case STATIC_TEXT:
+                return el.getText().trim();
 
             default:
-                throw new IllegalStateException(
-                        "Unsupported validation type: " + type
-                );
+                return el.getText();
         }
     }
 
@@ -422,6 +890,8 @@ public abstract class BasePage {
     // ==================================================
     // NEW: Execution Orchestrator
     // ==================================================
+
+    // This method will get deprecated in future
     public void execute(
             Map<String, ResolvedIntent> resolvedIntents,
             ExecutionPhase phase
@@ -530,6 +1000,7 @@ public abstract class BasePage {
     // Existing utilities (unchanged)
     // ==================================================
 
+    /*
     protected boolean isElementVisible(By locator) {
         try {
             return driver().findElement(locator).isDisplayed();
@@ -538,9 +1009,30 @@ public abstract class BasePage {
         }
     }
 
+     */
+    protected boolean isElementVisible(By locator) {
+
+        List<WebElement> elements = driver().findElements(locator);
+
+        if (elements.isEmpty()) {
+            throw new AssertionError("Element not found for locator: " + locator);
+        }
+
+        return elements.get(0).isDisplayed();
+    }
+
     protected void click(By locator) {
         RetryUtils.retryOnException(
                 () -> resolveElement(locator).click(),
+                StaleElementReferenceException.class,
+                ElementClickInterceptedException.class
+        );
+    }
+
+    protected void click(WebElement element) {
+
+        RetryUtils.retryOnException(
+                element::click,
                 StaleElementReferenceException.class,
                 ElementClickInterceptedException.class
         );
@@ -559,26 +1051,75 @@ public abstract class BasePage {
 
     protected void selectDropdown(By locator, String value) {
 
-        WebElement element = driver().findElement(locator);
+        WebElement element = resolver.resolve(locator);
         String tagName = element.getTagName();
 
+        // -------------------------------------------------
+        // Standard HTML <select>
+        // -------------------------------------------------
         if ("select".equalsIgnoreCase(tagName)) {
-            new Select(element).selectByVisibleText(value);
+
+            // 🔥 Wait until dropdown becomes enabled
+            WebDriverWait wait = new WebDriverWait(driver(), Duration.ofSeconds(5));
+            wait.until(d -> element.isEnabled());
+
+            Select select = new Select(element);
+
+            // 🔥 Optional: wait until options are loaded
+            wait.until(d -> select.getOptions().size() > 1);
+
+            select.selectByVisibleText(value);
             return;
         }
 
+        // -------------------------------------------------
+        // Custom dropdown (non-select)
+        // -------------------------------------------------
         jsClick(locator);
+
+        WebDriverWait wait = new WebDriverWait(driver(), Duration.ofSeconds(5));
+        wait.until(d -> element.isEnabled());
+
         element.sendKeys(value);
         element.sendKeys(Keys.ENTER);
     }
 
     protected boolean isElementPresent(By locator) {
-        return !driver().findElements(locator).isEmpty();
+        try {
+            resolver.resolve(locator);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
+
     protected void jsClick(By locator) {
-        WebElement element = driver().findElement(locator);
+        WebElement element = resolver.resolve(locator);
         ((JavascriptExecutor) driver())
                 .executeScript("arguments[0].click();", element);
     }
+
+
+    public void performComponentActionByIdentifier(
+            String componentKey,
+            String identifierValue,
+            String fieldKey
+    ) {
+
+        ComponentSchema schema = componentSchemas.get(componentKey);
+
+        if (schema == null) {
+            throw new RuntimeException(
+                    "Component not registered: " + componentKey
+            );
+        }
+
+        // 🔹 Resolve correct root element for identifier
+        WebElement root = resolveComponentRoot(schema, identifierValue);
+
+        // 🔹 Delegate to internal protected method
+        performComponentAction(componentKey, root, fieldKey);
+    }
+
 }

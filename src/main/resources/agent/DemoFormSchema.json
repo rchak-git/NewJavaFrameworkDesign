@@ -1,0 +1,143 @@
+{
+"pageName": "DemoFormsPage",
+
+"fields": [
+{
+"key": "firstName",
+"fieldType": "TEXTBOX",
+"locator": {
+"strategy": "id",
+"value": "firstName"
+}
+},
+{
+"key": "subscribe",
+"fieldType": "CHECKBOX",
+"locator": {
+"strategy": "id",
+"value": "subscribe"
+}
+},
+{
+"key": "submitBtn",
+"fieldType": "ACTION",
+"locator": {
+"strategy": "id",
+"value": "submitBtn"
+}
+}
+],
+"compositeFields": [
+{
+"key": "gender",
+"compositeType": "MULTI_SELECT_GROUP",
+"components": [
+{
+"key": "genderMale",
+"fieldType": "RADIO",
+"locator": {
+"strategy": "id",
+"value": "genderMale"
+}
+},
+{
+"key": "genderFemale",
+"fieldType": "RADIO",
+"locator": {
+"strategy": "id",
+"value": "genderFemale"
+}
+}
+]
+},
+{
+"key": "stateCity",
+"compositeType": "COMPOSITE_DROPDOWN",
+"components": [
+{
+"key": "state",
+"fieldType": "DROPDOWN",
+"locator": {
+"strategy": "id",
+"value": "state"
+}
+},
+{
+"key": "city",
+"fieldType": "DROPDOWN",
+"locator": {
+"strategy": "id",
+"value": "city"
+}
+}
+]
+}
+],
+"components": [],
+"tables": [
+{
+"key": "usersTable",
+"tableLocator": {
+"strategy": "id",
+"value": "usersTable"
+},
+"rowLocator": {
+"strategy": "css",
+"value": "#usersTable tbody tr"
+},
+"cellLocator": {
+"strategy": "css",
+"value": "td"
+},
+"columns": [
+{
+"name": "UserId",
+"index": 0,
+"type": "STATIC_TEXT"
+},
+{
+"name": "Name",
+"index": 1,
+"type": "STATIC_TEXT"
+},
+{
+"name": "Status",
+"index": 2,
+"type": "STATIC_TEXT"
+}
+]
+},
+{
+"key": "usersGrid",
+"tableLocator": {
+"strategy": "id",
+"value": "usersGrid"
+},
+"rowLocator": {
+"strategy": "css",
+"value": "#usersGrid .row:not(.header)"
+},
+"cellLocator": {
+"strategy": "css",
+"value": ".cell"
+},
+"columns": [
+{
+"name": "UserId",
+"index": 0,
+"type": "STATIC_TEXT"
+},
+{
+"name": "Name",
+"index": 1,
+"type": "STATIC_TEXT"
+},
+{
+"name": "Status",
+"index": 2,
+"type": "ACTION"
+}
+]
+}
+]
+}

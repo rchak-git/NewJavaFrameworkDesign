@@ -1,0 +1,36 @@
+{
+  "TD_VerifySingleProductPrice": {
+    "verify": {
+      "productCard": {
+        "ZARA COAT 3": {
+          "verify": {
+            "title": {
+              "type": "TEXT_EQUALS",
+              "expectedValue": "ZARA COAT 3"
+            },
+            "price": {
+              "type": "TEXT_EQUALS",
+              "expectedValue": "$ 11500"
+            }
+          }
+        }
+      }
+    },
+    "action": {
+      "productCard": {
+        "ZARA COAT 3": {
+          "addToCart": true
+        }
+      }
+    }
+  },
+
+  "TD_AddMultipleProducts": {
+    "populate": {
+      "productCard": {
+        "ZARA COAT 3": {},
+        "ADIDAS ORIGINAL": {}
+      }
+    }
+  }
+}

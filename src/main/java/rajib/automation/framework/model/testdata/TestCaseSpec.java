@@ -2,6 +2,8 @@ package rajib.automation.framework.model.testdata;
 
 
 
+import rajib.automation.framework.v3.table.model.TableVerificationSpec;
+
 import java.util.List;
 import java.util.Map;
 

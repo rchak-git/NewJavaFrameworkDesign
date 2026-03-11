@@ -1,0 +1,66 @@
+{
+
+  "Data_RegisterNewUser": {
+    "firstName": "John",
+    "lastName": "Doe",
+    "userEmail": "RUNTIME_EMAIL",
+    "userMobile": "9876543210",
+    "occupation": "Student",
+    "male": true,
+    "userPassword": "Test#1234",
+    "confirmPassword": "Test#1234",
+    "required": true
+  },
+
+  "TD_ENTER_REGISTRATION": {
+    "dataref": "Data_RegisterNewUser",
+    "action": {
+      "login": true
+    }
+  },
+
+  "TD_VERIFY_REGISTRATION": {
+    "dataref": "Data_RegisterNewUser"
+  },
+  "TD_DefaultState": {
+    "verify": {
+      "firstName": {
+        "type": "TEXT_EQUALS",
+        "expectedValue": ""
+      },
+      "lastName": {
+        "type": "TEXT_EQUALS",
+        "expectedValue": ""
+      },
+      "userEmail": {
+        "type": "TEXT_EQUALS",
+        "expectedValue": ""
+      },
+      "userMobile": {
+        "type": "TEXT_EQUALS",
+        "expectedValue": ""
+      },
+      "userPassword": {
+        "type": "TEXT_EQUALS",
+        "expectedValue": ""
+      },
+      "confirmPassword": {
+        "type": "TEXT_EQUALS",
+        "expectedValue": ""
+      },
+      "required": {
+        "type": "IS_SELECTED",
+        "expectedValue": true
+      },
+      "male": {
+        "type": "IS_SELECTED",
+        "expectedValue": false
+      },
+      "female": {
+        "type": "IS_SELECTED",
+        "expectedValue": false
+      }
+    }
+  }
+
+}
