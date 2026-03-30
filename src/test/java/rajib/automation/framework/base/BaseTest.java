@@ -1,6 +1,7 @@
 package rajib.automation.framework.base;
 
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import rajib.automation.framework.factory.DriverFactory;

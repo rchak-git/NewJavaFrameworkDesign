@@ -1,0 +1,22 @@
+{
+  "data": {
+    "validUser": {
+      "firstName": "Rajib",
+      "sports": true
+    }
+  },
+  "scenarios": {
+    "createUser": {
+      "refData": "validUser",
+      "populate": ["firstName", "sports"],
+      "verify": {
+        "firstName": {
+          "type": "TEXT_EQUALS"
+        },
+        "sports": {
+          "type": "IS_SELECTED"
+        }
+      }
+    }
+  }
+}
