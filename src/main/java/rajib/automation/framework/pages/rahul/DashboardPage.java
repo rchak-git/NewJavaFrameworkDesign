@@ -1,4 +1,4 @@
-package rajib.automation.framework.pages.rahul;
+/*package rajib.automation.framework.pages.rahul;
 
 import org.openqa.selenium.WebElement;
 import rajib.automation.framework.base.BasePage;
@@ -143,3 +143,5 @@ public class DashboardPage extends BasePage {
         performComponentAction("productCard", root, "addToCart");
     }
 }
+
+ */

@@ -72,6 +72,9 @@ public class BasePageR2 {
 
                 case VERIFY ->
                         control.verify(command);
+                case ADD, REMOVE, ADD_ALL, REMOVE_ALL -> control.doAction(command);
+                default -> throw new UnsupportedOperationException(
+                        "Action not supported: " + command.getAction());
             }
         }
     }

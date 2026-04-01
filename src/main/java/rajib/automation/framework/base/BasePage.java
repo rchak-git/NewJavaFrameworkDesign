@@ -116,6 +116,7 @@ public abstract class BasePage {
         ));
     }
 
+
     protected void initGlobalComponents() {
 
         componentSchemas.put("headerNav",
@@ -125,25 +126,25 @@ public abstract class BasePage {
                         "SINGLE",
                         null,
                         List.of(
-                                new FieldSchema(
+                                FieldSchema.ofSimple(
                                         "home",
                                         FieldType.ACTION,
                                         null,
                                         new LocatorSchema("xpath", ".//button[normalize-space()='HOME']")
                                 ),
-                                new FieldSchema(
+                                FieldSchema.ofSimple(
                                         "orders",
                                         FieldType.ACTION,
                                         null,
                                         new LocatorSchema("xpath", ".//button[normalize-space()='ORDERS']")
                                 ),
-                                new FieldSchema(
+                                FieldSchema.ofSimple(
                                         "cart",
                                         FieldType.ACTION,
                                         null,
                                         new LocatorSchema("xpath", ".//button[contains(.,'Cart')]")
                                 ),
-                                new FieldSchema(
+                                FieldSchema.ofSimple(
                                         "signOut",
                                         FieldType.ACTION,
                                         null,

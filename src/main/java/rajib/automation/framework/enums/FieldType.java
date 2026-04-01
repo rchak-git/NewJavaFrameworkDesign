@@ -1,5 +1,6 @@
 package rajib.automation.framework.enums;
 
+// This class is being used
 public enum FieldType {
     TEXTBOX,
     TEXT,
@@ -8,5 +9,6 @@ public enum FieldType {
     RADIO,
     LABEL,
     ACTION,
-    STATIC_TEXT
+    STATIC_TEXT,
+    DUALLISTBOX
 }

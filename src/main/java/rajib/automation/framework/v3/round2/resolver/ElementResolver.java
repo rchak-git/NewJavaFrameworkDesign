@@ -12,9 +12,7 @@ public class ElementResolver {
 
     private final WebDriver driver;
 
-
     public ElementResolver() {
-
         this.driver = DriverFactory.getDriver();
     }
 
@@ -22,35 +20,41 @@ public class ElementResolver {
         this.driver = driver;
     }
 
+    // For single-locator fields
     public WebElement resolve(FieldSchema schema) {
-
         LocatorSchema locator = schema.locator();
-
         if (locator == null) {
             throw new IllegalStateException(
                     "Locator is missing for field: " + schema.key()
             );
         }
-
         By by = toBy(locator);
-
-        // ✅ Use centralized wait utility
         return WaitUtils.waitForVisible(by);
     }
-    private By toBy(LocatorSchema locator) {
 
+    // For multi-locator fields (e.g., DualListBoxControl)
+    public WebElement resolve(FieldSchema schema, String locatorKey) {
+        LocatorSchema locator = schema.locator(locatorKey);
+        if (locator == null) {
+            throw new IllegalStateException(
+                    "Locator '" + locatorKey + "' is missing for field: " + schema.key()
+            );
+        }
+        By by = toBy(locator);
+        return WaitUtils.waitForVisible(by);
+    }
+
+    private By toBy(LocatorSchema locator) {
         String strategy = locator.strategy();
         String value = locator.value();
 
         return switch (strategy.toLowerCase()) {
-
             case "id" -> By.id(value);
             case "name" -> By.name(value);
             case "css" -> By.cssSelector(value);
             case "xpath" -> By.xpath(value);
             case "class" -> By.className(value);
             case "tag" -> By.tagName(value);
-
             default -> throw new IllegalArgumentException(
                     "Unsupported locator strategy: " + strategy
             );

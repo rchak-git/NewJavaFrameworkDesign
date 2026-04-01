@@ -1,4 +1,6 @@
+/*
 package rajib.automation.framework.pages.rahul;
+
 
 import rajib.automation.framework.base.BasePage;
 import rajib.automation.framework.codegen.schema.LocatorSchema;
@@ -119,3 +121,5 @@ public class MycartsPage extends BasePage {
     }
 
 }
+
+ */
