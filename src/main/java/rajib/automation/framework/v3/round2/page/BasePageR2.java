@@ -55,10 +55,10 @@ public class BasePageR2 {
                         "No FieldSchema found for key: " + fieldKey
                 ));
     }
-    public void execute(List<ControlCommand> commands) {
+    public void execute(List<ControlCommand> commands) throws InterruptedException {
 
         for (ControlCommand command : commands) {
-
+           Thread.sleep(500);
            Control control = controls.get(command.getFieldKey());
             if (control == null) {
                 continue;

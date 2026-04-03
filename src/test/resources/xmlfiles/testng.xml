@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Regression Suite" parallel="false">
+    <test name="Round2 Feature Tests">
+        <classes>
+            <class name="rajib.automation.framework.tests.Round2Tests"/>
+        </classes>
+    </test>
+</suite>
