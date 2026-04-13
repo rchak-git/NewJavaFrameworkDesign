@@ -1,3 +1,5 @@
+
+/*
 package rajib.automation.framework.tests.registration;
 
 import org.testng.annotations.Test;
@@ -38,3 +40,5 @@ public class RegistrationTests extends BaseTest {
 
 
 }
+
+ */

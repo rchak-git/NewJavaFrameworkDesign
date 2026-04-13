@@ -1,0 +1,68 @@
+{
+  "fields": [
+    {
+      "key": "firstName",
+      "fieldType": "TEXTBOX",
+      "logicalName": "First Name",
+      "locators": {
+        "main": { "type": "id", "value": "firstName" }
+      }
+    },
+    {
+      "key": "lastName",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Last Name",
+      "locators": {
+        "main": { "type": "id", "value": "lastName" }
+      }
+    },
+    {
+      "key": "userEmail",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Email",
+      "locators": {
+        "main": { "type": "id", "value": "userEmail" }
+      }
+    },
+    {
+      "key": "userNumber",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Mobile",
+      "locators": {
+        "main": { "type": "id", "value": "userNumber" }
+      }
+    },
+    {
+      "key": "dateOfBirthInput",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Date of Birth",
+      "locators": {
+        "main": { "type": "id", "value": "dateOfBirthInput" }
+      }
+    },
+    {
+      "key": "subjectsInput",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Subjects",
+      "locators": {
+        "main": { "type": "id", "value": "subjectsInput" }
+      }
+    },
+    {
+      "key": "currentAddress",
+      "fieldType": "TEXTBOX",
+      "logicalName": "Current Address",
+      "locators": {
+        "main": { "type": "id", "value": "currentAddress" }
+      }
+    },
+    {
+      "key": "submit",
+      "fieldType": "BUTTON",
+      "logicalName": "Submit",
+      "locators": {
+        "main": { "type": "id", "value": "submit" }
+      }
+    }
+  ]
+}

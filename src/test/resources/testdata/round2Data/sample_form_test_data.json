@@ -1,0 +1,19 @@
+{
+  "scenarios": {
+    "AddAndInvalidRemove": {
+      "firstName": "Alice",
+      "sports": true,
+      "placesDualListBox": {
+        "add": ["Milan", "Danville"],
+        "remove": ["Danville"]
+      }
+    },
+    "HappyPath": {
+      "firstName": "Bob",
+      "sports": false,
+      "placesDualListBox": {
+        "add": ["Grange", "Ngodo"]
+      }
+    }
+  }
+}

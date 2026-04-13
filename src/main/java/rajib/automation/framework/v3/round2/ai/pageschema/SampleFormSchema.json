@@ -1,0 +1,31 @@
+{
+  "fields": [
+    {
+      "key": "firstName",
+      "fieldType": "TEXTBOX",
+      "logicalName": "First Name",
+      "locators": {
+        "main": { "type": "id", "value": "firstName" }
+      }
+    },
+    {
+      "key": "sports",
+      "fieldType": "CHECKBOX",
+      "logicalName": "Sports Enthusiast",
+      "locators": {
+        "main": { "type": "id", "value": "sports" }
+      }
+    },
+    {
+      "key": "placesDualListBox",
+      "fieldType": "DUALLISTBOX",
+      "logicalName": "Places",
+      "locators": {
+        "source":      { "type": "id", "value": "sourceList" },
+        "target":      { "type": "id", "value": "targetList" },
+        "addButton":   { "type": "id", "value": "moveRight" },
+        "removeButton":{ "type": "id", "value": "moveLeft" }
+      }
+    }
+  ]
+}

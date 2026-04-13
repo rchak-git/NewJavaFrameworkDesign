@@ -10,5 +10,7 @@ public enum FieldType {
     LABEL,
     ACTION,
     STATIC_TEXT,
-    DUALLISTBOX
+    DUALLISTBOX,
+    WEBTABLE,
+    BUTTON
 }

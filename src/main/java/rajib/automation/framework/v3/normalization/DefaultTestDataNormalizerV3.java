@@ -1,3 +1,11 @@
+
+/*
+Deprecated: This class is no longer used in the framework. It was an initial implementation of a TestData normalizer for V3, but the normalization logic has since been moved to a more flexible and extensible system. This class is retained for reference purposes only and should not be used in new code.
+ TODO: Consider deleting this class in the future to reduce confusion and maintenance overhead.
+ */
+
+
+
 package rajib.automation.framework.v3.normalization;
 
 import rajib.automation.framework.enums.ValidationType;

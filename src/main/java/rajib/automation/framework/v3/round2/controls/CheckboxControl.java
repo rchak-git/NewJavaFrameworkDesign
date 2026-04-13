@@ -6,6 +6,7 @@ import rajib.automation.framework.v3.round2.control.BaseControl;
 import rajib.automation.framework.v3.round2.control.ControlCommand;
 import rajib.automation.framework.v3.round2.resolver.ElementResolver;
 
+/*
 public class CheckboxControl extends BaseControl {
 
     public CheckboxControl(FieldSchema schema, ElementResolver resolver) {
@@ -52,3 +53,5 @@ public class CheckboxControl extends BaseControl {
         System.out.println("VERIFY PASSED for " + command.getFieldKey());
     }
 }
+
+ */

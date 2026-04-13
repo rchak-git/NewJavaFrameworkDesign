@@ -1,0 +1,16 @@
+{
+  "scenarios": {
+    "HappyPath": {
+      "firstName": {
+        "populate": {
+          "pop_type": "SET",
+          "value": "Alice"
+        },
+        "verify": {
+          "valid_type": "TEXT_EQUALS",
+          "expected": "Alice"
+        }
+      }
+    }
+  }
+}

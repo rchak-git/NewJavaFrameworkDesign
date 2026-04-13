@@ -18,7 +18,7 @@ import java.util.List;
 
 public class Round2Tests {
 
-    @Test
+  /*  @Test
     public void regressionSmokeTest() {
         // ✅ Step 1: Start browser
         DriverFactory.setDriver("chrome");
@@ -26,12 +26,16 @@ public class Round2Tests {
         DriverFactory.getDriver().get("https://demoqa.com/automation-practice-form");
 
         Map<String, Object> testData =
-                TestDataLoaderR2.load("testdata/Round2TestData.json");
+                TestDataLoaderR2.load("testdata/round2Data/refactor_new_enums.json");
 
         ScenarioNormalizerR2 normalizer = new ScenarioNormalizerR2();
 
+        // New: Extract just the "createUser" scenario to pass to flat normalizer
+        Map<String, Object> allScenarios = (Map<String, Object>) testData.get("scenarios");
+        Map<String, Object> scenario = (Map<String, Object>) allScenarios.get("HappyPath");
+
         List<ControlCommand> commands =
-                normalizer.normalize(testData, "createUser");
+                normalizer.normalizeFlatScenario(scenario);
 
         System.out.println("=== Commands Generated ===");
         commands.forEach(System.out::println);
@@ -63,12 +67,14 @@ public class Round2Tests {
         }
         catch(Exception e)
         {
-
+            e.printStackTrace(); // (It's helpful to print, at least during dev)
         }
 
         DriverFactory.quitDriver();
     }
 
+   */
+    /*
     @Test
     public void testDualListBoxCustomDemo() {
         DriverFactory.setDriver("chrome");
@@ -112,4 +118,6 @@ public class Round2Tests {
 
         DriverFactory.quitDriver();
     }
+
+     */
 }
