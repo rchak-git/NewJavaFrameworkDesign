@@ -8,7 +8,7 @@
       { "fieldKey": "userNumber", "intent": "populate", "value": "1234567890" },
        { "fieldKey": "subjectsInput", "intent": "populate", "value": "Maths" },
       { "fieldKey": "currentAddress", "intent": "populate", "value": "123 Main St" },
-       { "fieldKey": "lastName", "intent": "verify", "expected": "DoeXYZ", "validationType": "TEXT_EQUALS" },
+       { "fieldKey": "lastName", "intent": "verify", "expected": "Doe", "validationType": "TEXT_EQUALS" },
       { "fieldKey": "userEmail", "intent": "verify", "expected": "CTX_EMAIL", "validationType": "TEXT_EQUALS" },
       { "fieldKey": "submit", "intent": "action", "actionType": "CLICK" }
     ]
