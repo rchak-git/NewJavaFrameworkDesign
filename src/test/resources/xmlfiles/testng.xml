@@ -2,7 +2,7 @@
 <suite name="Regression Suite" parallel="false">
     <test name="Round2 Feature Tests">
         <classes>
-            <class name="rajib.automation.framework.tests.Round2Tests"/>
+            <class name="rajib.automation.framework.tests.TestsRound2.PracticeFormPageTest"/>
         </classes>
     </test>
 </suite>
