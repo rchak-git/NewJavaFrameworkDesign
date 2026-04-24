@@ -1,15 +1,28 @@
 [
   {
-    "scenario": "valid_form_submission",
+    "scenarioId": "ValidFormPopulation",
     "steps": [
-      { "fieldKey": "firstName",  "intent": "populate", "value": "John" },
-      { "fieldKey": "lastName",   "intent": "populate", "value": "Doe" },
-      { "fieldKey": "userEmail",  "intent": "populate", "value": "CTX_EMAIL" },
-      { "fieldKey": "userNumber", "intent": "populate", "value": "1234567890" },
-       { "fieldKey": "subjectsInput", "intent": "populate", "value": "Maths" },
-      { "fieldKey": "currentAddress", "intent": "populate", "value": "123 Main St" },
-       { "fieldKey": "lastName", "intent": "verify", "expected": "Doe", "validationType": "TEXT_EQUALS" },
-      { "fieldKey": "userEmail", "intent": "verify", "expected": "CTX_EMAIL", "validationType": "TEXT_EQUALS" },
+      { "fieldKey": "firstName",      "intent": "populate", "value": "${firstName}" },
+      { "fieldKey": "lastName",       "intent": "populate", "value": "${lastName}" },
+      { "fieldKey": "userEmail",      "intent": "populate", "value": "${userEmail}" },
+      { "fieldKey": "userNumber",     "intent": "populate", "value": "${userNumber}" },
+      { "fieldKey": "gender",         "intent": "populate", "value": "${gender}" },
+      { "fieldKey": "subjectsInput",  "intent": "populate", "value": "${subjectsInput}" },
+      { "fieldKey": "currentAddress", "intent": "populate", "value": "${currentAddress}" }
+    ]
+  },
+  {
+    "testName": "Test1_PopulateFourFieldsAndSubmit",
+    "scenario": [
+      {
+        "use": "ValidFormPopulation",
+        "parameters": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "userEmail": "CTX_EMAIL",
+          "userNumber": "1234567890"
+        }
+      },
       { "fieldKey": "submit", "intent": "action", "actionType": "CLICK" }
     ]
   }

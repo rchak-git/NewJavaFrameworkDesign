@@ -7,6 +7,7 @@ public enum FieldType {
     DROPDOWN,
     CHECKBOX,
     RADIO,
+    RADIOGROUP,
     LABEL,
     ACTION,
     STATIC_TEXT,

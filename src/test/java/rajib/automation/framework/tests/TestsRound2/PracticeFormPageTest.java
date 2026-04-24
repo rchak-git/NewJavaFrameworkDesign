@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 import rajib.automation.framework.base.BaseTest;
 import rajib.automation.framework.v2.context.RuntimeContext;
 import rajib.automation.framework.v2.context.RuntimeContextHolder;
+import rajib.automation.framework.v3.round2.testdatamodels.TestStepData;
 import rajib.automation.framework.v3.round2.utils.StepConverters;
 import rajib.automation.framework.v3.round2.engine.CommandDispatcherR2;
 import rajib.automation.framework.v3.round2.loaders.TestDataLoaderR2;
@@ -41,9 +42,12 @@ public class PracticeFormPageTest extends BaseTest {
     @Test
     void testPracticeForm_validFormSubmissionExtent() {
         RuntimeContext context = RuntimeContextHolder.get();
-        TestScenario scenario = TestDataLoaderR2.loadScenario("testdata/round2Data/practiceformtestdata.json", "valid_form_submission");
-        driver.get("https://demoqa.com/automation-practice-form");
 
+        driver.get("https://demoqa.com/automation-practice-form");
+        List<TestStepData> steps = TestDataLoaderR2.loadResolvedTestSteps(
+                "testdata/round2Data/practiceformtestdata.json",
+                "Test1_PopulateFourFieldsAndSubmit"
+        );
         // Create your context and include Extent node
         StepContext stepContext = new StepContext(
                 driver,
@@ -51,7 +55,7 @@ public class PracticeFormPageTest extends BaseTest {
                 ExtentTestManager.getTest()
         );
 
-        List<ControlCommand> commands = scenario.steps().stream()
+        List<ControlCommand> commands = steps.stream()
                 .map(StepConverters::fromTestStepData)
                 .toList();
 

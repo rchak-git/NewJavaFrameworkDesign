@@ -8,6 +8,7 @@ import rajib.automation.framework.v2.context.RuntimeContextHolder;
 import rajib.automation.framework.v3.round2.ai.schema.models.FieldSchema;
 import rajib.automation.framework.v3.round2.ai.schema.models.LocatorSchema;
 import rajib.automation.framework.v3.round2.controls.ButtonControl;
+import rajib.automation.framework.v3.round2.controls.RadioGroupControl;
 import rajib.automation.framework.v3.round2.controls.TextBoxControl;
 import rajib.automation.framework.v3.round2.resolver.ElementResolver;
 
@@ -65,6 +66,20 @@ public class PracticeFormPage extends BasePageR2 {
                         FieldType.BUTTON,
                         "Submit",
                         mapOf("main", new LocatorSchema("id", "submit")) // Adjust locator as appropriate!
+                ),
+                resolver
+        ));
+        // --- Registering the Gender RadioGroup control ---
+        registerControl("gender", new RadioGroupControl(
+                new FieldSchema(
+                        "gender",
+                        FieldType.RADIOGROUP, // Use RADIOGROUP in your updated enum
+                        "Gender",
+                        Map.of(
+                                "male",   new LocatorSchema("id", "gender-radio-1"),
+                                "female", new LocatorSchema("id", "gender-radio-2"),
+                                "other",  new LocatorSchema("id", "gender-radio-3")
+                        )
                 ),
                 resolver
         ));

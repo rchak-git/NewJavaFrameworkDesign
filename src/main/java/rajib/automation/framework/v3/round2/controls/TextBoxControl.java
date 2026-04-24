@@ -30,11 +30,10 @@ public class TextBoxControl extends BaseControl {
     public void verify(ControlCommand command) {
         String actual = String.valueOf(read());
         String expected = String.valueOf(command.getValue());
-
         ValidationType type = (ValidationType) command.getType();
 
         switch (type) {
-            case TEXT_EQUALS -> {
+            case DEFAULT, TEXT_EQUALS -> {
                 if (!actual.equals(expected)) {
                     throw new AssertionError(
                             "TEXT_EQUALS failed for field '" + command.getFieldKey() +
@@ -57,7 +56,6 @@ public class TextBoxControl extends BaseControl {
 
         System.out.println("VERIFY PASSED for " + command.getFieldKey());
     }
-
     @Override
     public Object read() {
         return resolveElement().getAttribute("value");

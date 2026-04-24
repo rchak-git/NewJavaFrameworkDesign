@@ -20,7 +20,12 @@ public class StepConverters {
             }
             case VERIFY -> {
                 Object resolvedExpected = resolveVerifyExpected(step.expected(), context);
-                yield new ControlCommand(action, step.fieldKey(), resolvedExpected, ValidationType.valueOf(step.validationType()));
+                ValidationType valType = ValidationType.DEFAULT;
+                String valTypeStr = step.validationType();
+                if (valTypeStr != null && !valTypeStr.isEmpty()) {
+                    valType = ValidationType.valueOf(valTypeStr);
+                }
+                yield new ControlCommand(action, step.fieldKey(), resolvedExpected, valType);
             }
             case ACTION -> {
                 // Use actionType from test data or default to CLICK

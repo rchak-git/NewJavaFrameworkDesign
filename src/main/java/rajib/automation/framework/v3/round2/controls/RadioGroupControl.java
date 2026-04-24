@@ -2,13 +2,16 @@ package rajib.automation.framework.v3.round2.controls;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import rajib.automation.framework.enums.ValidationType;
 import rajib.automation.framework.v3.round2.ai.schema.models.FieldSchema;
+import rajib.automation.framework.v3.round2.ai.schema.models.LocatorSchema;
 import rajib.automation.framework.v3.round2.control.BaseControl;
 import rajib.automation.framework.v3.round2.control.ControlCommand;
 import rajib.automation.framework.v3.round2.resolver.ElementResolver;
 import rajib.automation.framework.v3.round2.utils.DriverActions;
 
 import java.util.List;
+import java.util.Map;
 
 public class RadioGroupControl extends BaseControl {
 
@@ -18,63 +21,37 @@ public class RadioGroupControl extends BaseControl {
 
     @Override
     public void populate(ControlCommand command) {
-        String valueToSelect = String.valueOf(command.getValue());
-
-        // The parent locator should ideally find the group; adjust if schema gives only child locators.
-        WebElement groupRoot = resolveElement();
-
-        // Find all <label> or <input> (common radio patterns). This example uses visible text match.
-        List<WebElement> options = groupRoot.findElements(By.xpath(".//label[normalize-space()]"));
-
-        boolean found = false;
-        for (WebElement label : options) {
-            String labelText = label.getText().trim();
-            if (labelText.equalsIgnoreCase(valueToSelect)) {
-                WebElement radioInput = label.findElement(By.xpath(".//preceding-sibling::input[@type='radio'] | .//input[@type='radio']"));
-                DriverActions.click(radioInput);
-                found = true;
-                System.out.println("RADIO GROUP SELECTED: " + valueToSelect + " for " + command.getFieldKey());
-                break;
-            }
-        }
-
-        if (!found) {
-            throw new AssertionError("Radio option not found: value=" + valueToSelect + " field=" + command.getFieldKey());
-        }
+        // The value in command's test data should match locator key in schema (e.g., "male", "female", "other")
+        String valueKey = String.valueOf(command.getValue());
+        WebElement radioInput = resolver.resolve(schema, valueKey);
+        DriverActions.click(radioInput);
+        System.out.println("Radio option selected: " + valueKey + " for field " + command.getFieldKey());
     }
 
     @Override
     public void verify(ControlCommand command) {
-        String expectedValue = String.valueOf(command.getValue());
-        WebElement groupRoot = resolveElement();
-        List<WebElement> options = groupRoot.findElements(By.xpath(".//label[normalize-space()]"));
-
-        boolean found = false, selected = false;
-        for (WebElement label : options) {
-            String labelText = label.getText().trim();
-            if (labelText.equalsIgnoreCase(expectedValue)) {
-                found = true;
-                WebElement radioInput = label.findElement(By.xpath(".//preceding-sibling::input[@type='radio'] | .//input[@type='radio']"));
-                selected = radioInput.isSelected();
-                break;
-            }
+        String expectedKey = String.valueOf(command.getValue());
+        Object typeObj = command.getType();
+        ValidationType type = null;
+        if (typeObj instanceof ValidationType) {
+            type = (ValidationType) typeObj;
+        } else if (typeObj instanceof String && typeObj != null) {
+            type = ValidationType.valueOf((String) typeObj);
         }
-        if (!found) throw new AssertionError("Radio option not found: " + expectedValue);
-        if (!selected) throw new AssertionError("Radio option not selected: " + expectedValue);
-
-        System.out.println("RADIO GROUP VERIFIED: " + expectedValue + " is selected for " + command.getFieldKey());
+        if (type == null) {
+            type = ValidationType.TEXT_EQUALS;
+        }
+        // We'll flesh out the switch/case and validation logic in the next step!
     }
-
     @Override
     public Object read() {
-        WebElement groupRoot = resolveElement();
-        // Finds the checked radio input inside the group
-        WebElement checked = groupRoot.findElement(By.xpath(".//input[@type='radio' and @checked or @type='radio' and @selected or @type='radio' and @aria-checked='true' or @type='radio' and @checked='checked']"));
-        if (checked == null) {
-            return null;
+        // Return the key of the selected option for this radio group, or null if none selected
+        for (String optionKey : schema.getLocators().keySet()) {
+            WebElement radioInput = resolver.resolve(schema, optionKey);
+            if (radioInput.isSelected()) {
+                return optionKey;
+            }
         }
-        // Return the associated label text for the checked radio
-        WebElement label = checked.findElement(By.xpath("following-sibling::label | parent::label"));
-        return label.getText().trim();
+        return null;
     }
 }

@@ -1,7 +1,7 @@
 package rajib.automation.framework.enums;
 
 public enum ValidationType {
-
+    DEFAULT,
     TEXT_EQUALS,
     TEXT_CONTAINS,
 
