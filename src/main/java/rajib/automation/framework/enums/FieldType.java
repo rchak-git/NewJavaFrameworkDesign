@@ -2,16 +2,19 @@ package rajib.automation.framework.enums;
 
 // This class is being used
 public enum FieldType {
-    TEXTBOX,
-    TEXT,
+    TEXTBOX,        // For all user-editable text input fields
     DROPDOWN,
     CHECKBOX,
-    RADIO,
-    RADIOGROUP,
-    LABEL,
+     RADIOGROUP,
+    // Radio group or option (pick usage)
+    BUTTON,         // For buttons ("submit", etc.)
+    STATIC_TEXT,    // For display-only or verification targets
+    DUALLISTBOX,    // (if you support it!)
+    WEBTABLE  ,      // (if you support it!)
+    // Optionally: LABEL, ACTION (but usually covered by above)
     ACTION,
-    STATIC_TEXT,
-    DUALLISTBOX,
-    WEBTABLE,
-    BUTTON
+    LABEL,
+    DATEBOX,
+    REACT_DROPDOWN
+
 }

@@ -1,4 +1,4 @@
-package rajib.automation.framework.codegen.schema;
+/*package rajib.automation.framework.codegen.schema;
 
 import rajib.automation.framework.enums.FieldType;
 
@@ -35,3 +35,5 @@ public record FieldSchema(
         return locators.get(name);
     }
 }
+/
+ */

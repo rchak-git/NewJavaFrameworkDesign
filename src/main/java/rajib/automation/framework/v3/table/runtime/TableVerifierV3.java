@@ -1,3 +1,4 @@
+/*
 package rajib.automation.framework.v3.table.runtime;
 
 import org.openqa.selenium.WebElement;
@@ -96,3 +97,5 @@ public class TableVerifierV3 {
         return converted;
     }
 }
+
+ */

@@ -1,4 +1,4 @@
-package rajib.automation.framework.tables.fluent;
+/*package rajib.automation.framework.tables.fluent;
 
 import rajib.automation.framework.tables.actions.TableActionExecutor;
 
@@ -14,4 +14,6 @@ public class TableActions {
         return new TableRowActions(executor, criteria);
     }
 }
+
+ */
 

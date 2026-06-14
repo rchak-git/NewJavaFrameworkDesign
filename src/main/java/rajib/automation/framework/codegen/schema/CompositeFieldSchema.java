@@ -1,4 +1,4 @@
-package rajib.automation.framework.codegen.schema;
+/*package rajib.automation.framework.codegen.schema;
 
 import rajib.automation.framework.enums.CompositeType;
 import java.util.List;
@@ -8,3 +8,5 @@ public record CompositeFieldSchema(
         CompositeType compositeType,
         List<FieldSchema> components
 ) {}
+
+ */

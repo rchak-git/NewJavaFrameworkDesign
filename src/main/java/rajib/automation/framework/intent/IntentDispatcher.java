@@ -1,3 +1,5 @@
+
+/*
 package rajib.automation.framework.intent;
 
 import rajib.automation.framework.enums.ExecutionPhase;
@@ -7,7 +9,7 @@ import rajib.automation.framework.model.TestData;
 import rajib.automation.framework.normalization.DefaultTestDataNormalizer;
 import rajib.automation.framework.normalization.ExecutionIntentNormalizer;
 import rajib.automation.framework.normalization.legacy.NormalizedIntent;
-import rajib.automation.framework.pages.RegistrationPage;
+
 import rajib.automation.framework.planning.DefaultPlanner;
 import rajib.automation.framework.planning.ExecutionPlan;
 import rajib.automation.framework.resolution.ResolvedIntent;
@@ -23,17 +25,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-/*
+
  DEPRECATED: This class represents the legacy intent execution flow, which is tightly coupled to the existing BasePage logic and test data structure. It serves as a transitional adapter to bridge the gap between the new intent-based design and the old event-based execution model. The goal is to eventually migrate all test cases to use the new intent-based approach directly, at which point this class can be removed.
- */
 
 
 
 
+/*
+//public class IntentDispatcher {
 
-public class IntentDispatcher {
-
-    public void execute(String intentName) {
+ //   public void execute(String intentName) {
         execute(intentName, null);
     }
 
@@ -153,3 +154,4 @@ public class IntentDispatcher {
         return new RegistrationPage();
     }
 }
+*/

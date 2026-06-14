@@ -1,4 +1,4 @@
-package rajib.automation.framework.pages.rahul;
+/*package rajib.automation.framework.pages.rahul;
 
 import rajib.automation.framework.base.BasePage;
 import rajib.automation.framework.model.PageField;
@@ -63,3 +63,5 @@ public class LoginPage extends BasePage {
 
     }
 }
+
+ */

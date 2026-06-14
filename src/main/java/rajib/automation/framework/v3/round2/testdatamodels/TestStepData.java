@@ -8,5 +8,6 @@ public record TestStepData(
         Object value,
         Object expected,
         String validationType,
-        String actionType
+        String actionType,
+        String populationType
 ) {}

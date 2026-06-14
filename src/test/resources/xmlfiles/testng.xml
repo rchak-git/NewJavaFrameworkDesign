@@ -1,8 +1,9 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 <suite name="Regression Suite" parallel="false">
     <test name="Round2 Feature Tests">
+        <parameter name ="url" value ="https://www.example.com" />
         <classes>
-            <class name="rajib.automation.framework.tests.TestsRound2.PracticeFormPageTest"/>
+            <class name="rajib.automation.framework.tests.TestsRound2.PracticeFormPageTest" />
         </classes>
     </test>
 </suite>

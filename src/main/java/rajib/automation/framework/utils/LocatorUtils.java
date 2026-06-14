@@ -3,14 +3,14 @@ package rajib.automation.framework.utils;
 
 
 import org.openqa.selenium.By;
-import rajib.automation.framework.codegen.schema.LocatorSchema;
+import rajib.automation.framework.v3.round2.ai.schema.models.LocatorSchema;
 
 public final class LocatorUtils {
 
     private LocatorUtils() {
         // utility class
     }
-
+/*
     public static By buildBy(LocatorSchema locator) {
 
         return switch (locator.strategy().toLowerCase()) {
@@ -38,4 +38,10 @@ public final class LocatorUtils {
             );
         };
     }
+
+ */
 }
+
+
+
+

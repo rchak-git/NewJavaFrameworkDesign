@@ -1,5 +1,5 @@
 package rajib.automation.framework.tests;
-
+/*
 import org.testng.annotations.Test;
 import rajib.automation.framework.codegen.schema.FieldSchema;
 import rajib.automation.framework.codegen.schema.LocatorSchema;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class Round2Tests {
 
-  /*  @Test
+   @Test
     public void regressionSmokeTest() {
         // ✅ Step 1: Start browser
         DriverFactory.setDriver("chrome");
@@ -119,5 +119,7 @@ public class Round2Tests {
         DriverFactory.quitDriver();
     }
 
-     */
+
 }
+
+     */

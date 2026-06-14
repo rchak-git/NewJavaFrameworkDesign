@@ -1,3 +1,4 @@
+/*
 package rajib.automation.framework.tables.actions;
 
 import org.openqa.selenium.By;
@@ -407,3 +408,5 @@ public class TableActionExecutor {
     }
 
 }
+
+ */

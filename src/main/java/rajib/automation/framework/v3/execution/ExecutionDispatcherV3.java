@@ -1,6 +1,8 @@
+
+/*
 package rajib.automation.framework.v3.execution;
 
-import rajib.automation.framework.base.BasePage;
+
 import rajib.automation.framework.v2.context.RuntimeContext;
 import rajib.automation.framework.v2.resolver.PlaceholderResolver;
 
@@ -9,6 +11,7 @@ import rajib.automation.framework.v3.intent.NormalizedIntent;
 import rajib.automation.framework.v3.intent.PopulateFieldsPayload;
 import rajib.automation.framework.v3.intent.VerifyFieldsPayload;
 import rajib.automation.framework.intent.VerifySpec;
+import rajib.automation.framework.v3.round2.page.BasePageR2;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +19,7 @@ import java.util.Map;
 public class ExecutionDispatcherV3 {
 
     public void dispatch(
-            BasePage page,
+            BasePageR2 page,
             NormalizedIntent intent,
             RuntimeContext context
     ) {
@@ -40,7 +43,7 @@ public class ExecutionDispatcherV3 {
     // ---------------------------------------------------------
 
     private void handlePopulate(
-            BasePage page,
+            BasePageR2 page,
             NormalizedIntent intent,
             RuntimeContext context
     ) {
@@ -56,7 +59,7 @@ public class ExecutionDispatcherV3 {
     // ---------------------------------------------------------
 
     private void handleVerify(
-            BasePage page,
+            BasePageR2 page,
             NormalizedIntent intent,
             RuntimeContext context
     ) {
@@ -73,7 +76,7 @@ public class ExecutionDispatcherV3 {
 
 
     private void handleAction(
-            BasePage page,
+            BasePageR2 page,
             NormalizedIntent intent,
             RuntimeContext context
     ) {
@@ -132,3 +135,5 @@ public class ExecutionDispatcherV3 {
         return resolved;
     }
 }
+
+ */

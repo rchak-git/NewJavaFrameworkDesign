@@ -1,5 +1,6 @@
-package rajib.automation.framework.pages;
 
+package rajib.automation.framework.pages;
+/*
 import rajib.automation.framework.base.BasePage;
 import rajib.automation.framework.model.PageField;
 import rajib.automation.framework.enums.FieldType;
@@ -195,3 +196,5 @@ public class RegistrationPage extends BasePage {
 
     }
 }
+
+ */

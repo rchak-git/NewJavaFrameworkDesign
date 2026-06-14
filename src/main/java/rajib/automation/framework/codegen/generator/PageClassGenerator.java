@@ -1,4 +1,4 @@
-package rajib.automation.framework.codegen.generator;
+/*package rajib.automation.framework.codegen.generator;
 
 
 import rajib.automation.framework.codegen.schema.*;
@@ -267,3 +267,5 @@ public class PageClassGenerator {
     }
 
 }
+
+ */

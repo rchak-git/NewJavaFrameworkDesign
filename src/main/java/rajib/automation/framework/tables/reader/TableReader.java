@@ -1,8 +1,9 @@
-package rajib.automation.framework.tables.reader;
+
+/*package rajib.automation.framework.tables.reader;
 
 
 import org.openqa.selenium.By;
-import rajib.automation.framework.codegen.schema.LocatorSchema;
+import rajib.automation.framework.v3.round2.ai.schema.models.LocatorSchema;
 import rajib.automation.framework.codegen.schema.TableColumnSchema;
 import rajib.automation.framework.codegen.schema.TableSchema;
 import org.openqa.selenium.WebDriver;
@@ -19,7 +20,7 @@ import java.util.Map;
  * Future actions belong in:
  * - TableActionExecutor (WT-3)
  * - TableVerifier (already separated)
- */
+
 
 public class TableReader {
 
@@ -143,3 +144,6 @@ public class TableReader {
 
 
 }
+
+ */
+

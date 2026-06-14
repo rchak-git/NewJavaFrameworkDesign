@@ -1,4 +1,4 @@
-package rajib.automation.framework.codegen.runner;
+/*package rajib.automation.framework.codegen.runner;
 
 
 import rajib.automation.framework.codegen.loader.PageSchemaLoader;
@@ -44,3 +44,5 @@ public class SchemaDebugRunner {
         }
     }
 }
+
+ */

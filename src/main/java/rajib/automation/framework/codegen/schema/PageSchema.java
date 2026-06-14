@@ -1,4 +1,4 @@
-package rajib.automation.framework.codegen.schema;
+/*package rajib.automation.framework.codegen.schema;
 
 import java.util.List;
 
@@ -10,3 +10,4 @@ public record PageSchema(
         List<TableSchema> tables,
         List<ComponentSchema> components // ✅ NEW (optional)
 ) {}
+*/

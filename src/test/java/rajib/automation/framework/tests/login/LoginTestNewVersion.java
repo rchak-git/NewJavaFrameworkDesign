@@ -1,3 +1,5 @@
+
+/*
 package rajib.automation.framework.tests.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +30,7 @@ public class LoginTestNewVersion extends BaseTest {
 // 6. Open cart
 // 7. Verify subtotal and total are $11500
 
-
+/*
     @Test
     void testPopulateAndVerifyTable() throws Exception {
 
@@ -71,3 +73,5 @@ public class LoginTestNewVersion extends BaseTest {
 
 
 }
+
+ */

@@ -1,3 +1,5 @@
+
+/*
 package rajib.automation.framework.codegen.runner;
 
 import rajib.automation.framework.codegen.generator.PageClassGenerator;
@@ -27,4 +29,6 @@ public class GeneratorRunner {
         );
     }
 }
+
+ */
 

@@ -1,4 +1,4 @@
-package rajib.automation.framework.pages;
+/*package rajib.automation.framework.pages;
 
 
 import rajib.automation.framework.base.BasePage;
@@ -56,7 +56,7 @@ public class PracticeFormPage extends BasePage {
                         "genderMale",
                         "id",
                         "gender-radio-1",
-                        FieldType.RADIO,
+                        FieldType.RADIOGROUP,
                         "genderMale"
                 )
         );
@@ -66,7 +66,7 @@ public class PracticeFormPage extends BasePage {
                         "genderFemale",
                         "id",
                         "gender-radio-2",
-                        FieldType.RADIO,
+                        FieldType.RADIOGROUP,
                         "genderFemale"
                 )
         );
@@ -76,7 +76,7 @@ public class PracticeFormPage extends BasePage {
                         "genderOther",
                         "id",
                         "gender-radio-3",
-                        FieldType.RADIO,
+                        FieldType.RADIOGROUP,
                         "genderOther"
                 )
         );
@@ -148,3 +148,5 @@ public class PracticeFormPage extends BasePage {
 
     }
 }
+
+ */

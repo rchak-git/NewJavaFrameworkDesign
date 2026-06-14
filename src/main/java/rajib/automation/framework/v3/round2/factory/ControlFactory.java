@@ -32,7 +32,7 @@ public class ControlFactory {
         switch (type) {
             case TEXTBOX:
                 return new TextBoxControl(schema, resolver);
-            case RADIO:
+            case RADIOGROUP:
                 return new RadioGroupControl(schema, resolver);
             case CHECKBOX:
          //       return new CheckboxControl(schema, resolver);

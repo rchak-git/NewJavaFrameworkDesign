@@ -1,4 +1,4 @@
-package rajib.automation.framework.tables.verifier;
+/*package rajib.automation.framework.tables.verifier;
 
 import rajib.automation.framework.tables.reader.TableReader;
 
@@ -12,7 +12,7 @@ import java.util.Objects;
  * - NO WebDriver usage
  * - NO DOM access
  * - NO mutations
- */
+
 public class TableVerifier {
 
     private final TableReader reader;
@@ -73,3 +73,6 @@ public class TableVerifier {
         return this;
     }
 }
+
+ */
+

@@ -1,4 +1,4 @@
-package rajib.automation.framework.codegen.schema;
+/*package rajib.automation.framework.codegen.schema;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +15,7 @@ import java.util.Objects;
  * - identifierFields (multi-key) can be introduced later without breaking this POJO
  *   by adding an additional optional property.
  */
+/*
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -35,9 +36,7 @@ public record ComponentSchema(
 
 ) {
 
-    /**
-     * Canonical constructor – auto-normalizes resolutionStrategy
-     */
+
     public ComponentSchema {
         // Normalize resolutionStrategy if null
         if (resolutionStrategy == null || resolutionStrategy.isBlank()) {
@@ -48,9 +47,7 @@ public record ComponentSchema(
         }
     }
 
-    /**
-     * Backward-compatible constructor (old generator support)
-     */
+
     public ComponentSchema(
             String key,
             LocatorSchema root,
@@ -85,3 +82,7 @@ public record ComponentSchema(
                 ));
     }
 }
+
+ */
+
+

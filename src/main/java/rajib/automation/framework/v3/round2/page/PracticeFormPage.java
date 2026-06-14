@@ -1,94 +1,197 @@
 package rajib.automation.framework.v3.round2.page;
 
+import java.util.Map;
 
 
 import rajib.automation.framework.enums.FieldType;
 import rajib.automation.framework.v2.context.RuntimeContext;
-import rajib.automation.framework.v2.context.RuntimeContextHolder;
+import rajib.automation.framework.v3.round2.resolver.ElementResolver;
 import rajib.automation.framework.v3.round2.ai.schema.models.FieldSchema;
 import rajib.automation.framework.v3.round2.ai.schema.models.LocatorSchema;
-import rajib.automation.framework.v3.round2.controls.ButtonControl;
-import rajib.automation.framework.v3.round2.controls.RadioGroupControl;
-import rajib.automation.framework.v3.round2.controls.TextBoxControl;
-import rajib.automation.framework.v3.round2.resolver.ElementResolver;
-
-import java.util.HashMap;
-import java.util.Map;
+import rajib.automation.framework.v3.round2.controls.*;
 
 public class PracticeFormPage extends BasePageR2 {
 
-    // Hold a reference (optional if always going via BasePageR2)
-    protected final RuntimeContext context;
+    private final TextBoxControl firstName;
+    private final TextBoxControl lastName;
+    private final TextBoxControl userEmail;
+    private final RadioGroupControl gender;
+    private final TextBoxControl mobileNumber;
+    private final DateControl dateOfBirth;
+    private final TextBoxControl subjects;
+    private final CheckboxControl hobbies;
+    private final TextBoxControl currentAddress;
 
-    public PracticeFormPage(ElementResolver resolver, RuntimeContext context) {
-        super(resolver, context);
-        this.context = context;
+    private final ButtonControl submit;
 
-        registerControl("firstName", new TextBoxControl(
-                new FieldSchema("firstName", FieldType.TEXTBOX, "First Name",
-                        mapOf("main", new LocatorSchema("id", "firstName"))),
-                resolver
-        ));
+    public PracticeFormPage(ElementResolver resolver, RuntimeContext runtimeContext) {
 
-        registerControl("lastName", new TextBoxControl(
-                new FieldSchema("lastName", FieldType.TEXTBOX, "Last Name",
-                        mapOf("main", new LocatorSchema("id", "lastName"))),
-                resolver
-        ));
+        super(resolver, runtimeContext);
 
-        registerControl("userEmail", new TextBoxControl(
-                new FieldSchema("userEmail", FieldType.TEXTBOX, "Email",
-                        mapOf("main", new LocatorSchema("id", "userEmail"))),
-                resolver
-        ));
+        FieldSchema firstNameSchema = buildFieldSchema(
+                "firstName",
+                FieldType.TEXTBOX,
+                "First Name",
+                "main",
+                "id",
+                "firstName"
+        );
 
-        registerControl("userNumber", new TextBoxControl(
-                new FieldSchema("userNumber", FieldType.TEXTBOX, "Mobile",
-                        mapOf("main", new LocatorSchema("id", "userNumber"))),
-                resolver
-        ));
+        FieldSchema lastNameSchema = buildFieldSchema(
+                "lastName",
+                FieldType.TEXTBOX,
+                "Last Name",
+                "main",
+                "id",
+                "lastName"
+        );
 
-        registerControl("subjectsInput", new TextBoxControl(
-                new FieldSchema("subjectsInput", FieldType.TEXTBOX, "Subjects",
-                        mapOf("main", new LocatorSchema("id", "subjectsInput"))),
-                resolver
-        ));
+        FieldSchema userEmailSchema = buildFieldSchema(
+                "userEmail",
+                FieldType.TEXTBOX,
+                "User Email",
+                "main",
+                "id",
+                "userEmail"
+        );
 
-        registerControl("currentAddress", new TextBoxControl(
-                new FieldSchema("currentAddress", FieldType.TEXTBOX, "Current Address",
-                        mapOf("main", new LocatorSchema("id", "currentAddress"))),
-                resolver
-        ));
+        FieldSchema genderSchema = new FieldSchema(
+                "gender",
+                FieldType.RADIOGROUP,
+                "Gender",
+                Map.of(
+                        "male",   new LocatorSchema("id", "gender-radio-1"),
+                        "female", new LocatorSchema("id", "gender-radio-2"),
+                        "other",  new LocatorSchema("id", "gender-radio-3")
+                )
+        );
 
-        registerControl("submit", new ButtonControl(
-                new FieldSchema(
-                        "submit",
-                        FieldType.BUTTON,
-                        "Submit",
-                        mapOf("main", new LocatorSchema("id", "submit")) // Adjust locator as appropriate!
-                ),
-                resolver
-        ));
-        // --- Registering the Gender RadioGroup control ---
-        registerControl("gender", new RadioGroupControl(
-                new FieldSchema(
-                        "gender",
-                        FieldType.RADIOGROUP, // Use RADIOGROUP in your updated enum
-                        "Gender",
-                        Map.of(
-                                "male",   new LocatorSchema("id", "gender-radio-1"),
-                                "female", new LocatorSchema("id", "gender-radio-2"),
-                                "other",  new LocatorSchema("id", "gender-radio-3")
-                        )
-                ),
-                resolver
-        ));
+        FieldSchema mobileNumberSchema = buildFieldSchema(
+                "mobileNumber",
+                FieldType.TEXTBOX,
+                "Mobile Number",
+                "main",
+                "id",
+                "userNumber"
+        );
+
+        FieldSchema dateOfBirthSchema = buildFieldSchema(
+                "dateOfBirth",
+                FieldType.DATEBOX,
+                "Date Of Birth",
+                "main",
+                "id",
+                "dateOfBirthInput"
+        );
+
+        FieldSchema subjectsSchema = buildFieldSchema(
+                "subjects",
+                FieldType.TEXTBOX,
+                "Subjects",
+                "main",
+                "id",
+                "subjectsInput"
+        );
+
+        FieldSchema hobbiesSchema = new FieldSchema(
+                "hobbies",
+                FieldType.CHECKBOX,
+                "Hobbies",
+                Map.of(
+                        "sports",      new LocatorSchema("id", "hobbies-checkbox-1"),
+                        "reading",     new LocatorSchema("id", "hobbies-checkbox-2"),
+                        "music",       new LocatorSchema("id", "hobbies-checkbox-3")
+                )
+        );
+
+        FieldSchema currentAddressSchema = buildFieldSchema(
+                "currentAddress",
+                FieldType.TEXTBOX,
+                "Current Address",
+                "main",
+                "id",
+                "currentAddress"
+        );
+
+        FieldSchema stateSchema = buildFieldSchema(
+                "state",
+                FieldType.DROPDOWN,
+                "State",
+                "main",
+                "id",
+                "state"
+        );
+
+        FieldSchema citySchema = buildFieldSchema(
+                "city",
+                FieldType.DROPDOWN,
+                "City",
+                "main",
+                "id",
+                "city"
+        );
+
+        FieldSchema submitSchema = buildFieldSchema(
+                "submit",
+                FieldType.BUTTON,
+                "Submit",
+                "main",
+                "id",
+                "submit"
+        );
+
+        firstName = new TextBoxControl(firstNameSchema, resolver);
+        registerControl("firstName", firstName);
+
+        lastName = new TextBoxControl(lastNameSchema, resolver);
+        registerControl("lastName", lastName);
+
+        userEmail = new TextBoxControl(userEmailSchema, resolver);
+        registerControl("userEmail", userEmail);
+
+        gender = new RadioGroupControl(genderSchema, resolver);
+        registerControl("gender", gender);
+
+        mobileNumber = new TextBoxControl(mobileNumberSchema, resolver);
+        registerControl("mobileNumber", mobileNumber);
+
+        dateOfBirth = new DateControl(dateOfBirthSchema, resolver);
+        registerControl("dateOfBirth", dateOfBirth);
+
+        subjects = new TextBoxControl(subjectsSchema, resolver);
+        registerControl("subjects", subjects);
+
+        hobbies = new CheckboxControl(hobbiesSchema, resolver);
+        registerControl("hobbies", hobbies);
+
+        currentAddress = new TextBoxControl(currentAddressSchema, resolver);
+        registerControl("currentAddress", currentAddress);
+
+
+
+        submit = new ButtonControl(submitSchema, resolver);
+        registerControl("submit", submit);
     }
 
-    // Utility method stays
-    private Map<String, LocatorSchema> mapOf(String k, LocatorSchema v) {
-        Map<String, LocatorSchema> m = new HashMap<>();
-        m.put(k, v);
-        return m;
+    private FieldSchema buildFieldSchema(
+            String key,
+            FieldType fieldType,
+            String logicalName,
+            String locatorKey,
+            String strategy,
+            String value
+    ) {
+
+        LocatorSchema locatorSchema = new LocatorSchema();
+        locatorSchema.setStrategy(strategy);
+        locatorSchema.setValue(value);
+
+        FieldSchema fieldSchema = new FieldSchema();
+        fieldSchema.setKey(key);
+        fieldSchema.setFieldType(fieldType);
+        fieldSchema.setLogicalName(logicalName);
+        fieldSchema.setLocators(Map.of(locatorKey, locatorSchema));
+
+        return fieldSchema;
     }
 }

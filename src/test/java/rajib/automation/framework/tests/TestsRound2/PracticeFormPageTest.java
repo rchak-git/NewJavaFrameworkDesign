@@ -37,6 +37,26 @@ public class PracticeFormPageTest extends BaseTest {
     }
 
  */
+@Test
+public void testPracticeForm_validPopulationAndSubmitExtent() {
+    RuntimeContext context = RuntimeContextHolder.get();
+    driver.get("https://demoqa.com/automation-practice-form");
+    List<TestStepData> steps = TestDataLoaderR2.loadResolvedTestSteps(
+            "testdata/round2Data/practiceformtestdata.json",
+            "Test1_ValidPopulationAndSubmit"
+    );
+    StepContext stepContext = new StepContext(
+            driver,
+            "testPracticeForm_validPopulationAndSubmitExtent",
+            ExtentTestManager.getTest()
+    );
+    List<ControlCommand> commands = steps.stream()
+            .map(StepConverters::fromTestStepData)
+            .toList();
+    PracticeFormPage formPage = new PracticeFormPage(new ElementResolver(), context);
+    CommandDispatcherR2.executeAll(formPage, commands, stepContext);
+    System.out.println("Wait Here");
+}
 
 
     @Test

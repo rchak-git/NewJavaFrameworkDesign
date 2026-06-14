@@ -1,4 +1,4 @@
-package rajib.automation.framework.codegen.loader;
+/*package rajib.automation.framework.codegen.loader;
 
 
 
@@ -28,3 +28,5 @@ public class PageSchemaLoader {
         }
     }
 }
+
+ */

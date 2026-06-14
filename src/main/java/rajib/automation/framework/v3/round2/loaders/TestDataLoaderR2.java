@@ -2,17 +2,18 @@ package rajib.automation.framework.v3.round2.loaders;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import rajib.automation.framework.v3.round2.testdatamodels.TestStepData;
 
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
-import rajib.automation.framework.v3.round2.testdatamodels.TestStepData;
+
 public class TestDataLoaderR2 {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
     // Scenario definitions indexed by scenarioId (populate when file is loaded)
-    private static Map<String, List<TestStepData>> scenarioMap = new HashMap<>();
+    private static final Map<String, List<TestStepData>> scenarioMap = new HashMap<>();
 
     // Loads all JSON objects (scenario defs and test cases) in order from the file.
     private static List<Map<String, Object>> loadAllEntries(String fileName) {
@@ -55,8 +56,8 @@ public class TestDataLoaderR2 {
                     if (stepMap.containsKey("use")) {
                         // This is a scenario inclusion
                         String useScenarioId = (String) stepMap.get("use");
-                        Map<String, String> parameters = stepMap.get("parameters") != null
-                                ? (Map<String, String>) stepMap.get("parameters")
+                        Map<String, Object> parameters = stepMap.get("parameters") != null
+                                ? (Map<String, Object>) stepMap.get("parameters")
                                 : Collections.emptyMap();
                         List<TestStepData> includedSteps = scenarioMap.get(useScenarioId);
                         if (includedSteps == null)
@@ -80,13 +81,13 @@ public class TestDataLoaderR2 {
     }
 
     // Helper: Only include the step if all placeholders are present in the data
-    private static boolean shouldIncludeStep(TestStepData step, Map<String, String> parameters) {
+    private static boolean shouldIncludeStep(TestStepData step, Map<String, Object> parameters) {
         // For value
         if (step.value() instanceof String valueStr && isPlaceholder(valueStr)) {
             String key = extractPlaceholderName(valueStr);
             return parameters.containsKey(key);
         }
-        // For expected (you can extend this logic if you want to filter on expected fields too)
+        // For expected
         if (step.expected() instanceof String expectedStr && isPlaceholder(expectedStr)) {
             String key = extractPlaceholderName(expectedStr);
             return parameters.containsKey(key);
@@ -104,30 +105,56 @@ public class TestDataLoaderR2 {
     private static String extractPlaceholderName(String str) {
         return str.substring(2, str.length() - 1);
     }
+
     // Substitute all parameter occurrences in a TestStepData
-    public static TestStepData substituteParams(TestStepData step, Map<String, String> params) {
+    public static TestStepData substituteParams(TestStepData step, Map<String, Object> params) {
         return new TestStepData(
                 step.fieldKey(),
                 step.intent(),
                 substituteField(step.value(), params),
                 substituteField(step.expected(), params),
                 step.validationType(),
-                step.actionType()
+                step.actionType(),
+                step.populationType()
         );
     }
 
     // Replace ${var} in an Object (usually String) with params.get(var)
-    private static Object substituteField(Object field, Map<String, String> params) {
+    private static Object substituteField(Object field, Map<String, Object> params) {
         if (field == null || params == null) return field;
+        // Debug print (optional)
+        // System.out.println("ENTER substituteField: type=" + field.getClass() + ", value=" + field);
+
         if (field instanceof String str) {
             String result = str;
-            for (Map.Entry<String, String> entry : params.entrySet()) {
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
                 String placeholder = "${" + entry.getKey() + "}";
-                result = result.replace(placeholder, entry.getValue() != null ? entry.getValue() : "");
+                Object value = entry.getValue();
+                String replacement;
+                if (value instanceof List<?> list) {
+                    replacement = list.stream().map(String::valueOf).collect(Collectors.joining(","));
+                } else if (value != null) {
+                    replacement = value.toString();
+                } else {
+                    replacement = "";
+                }
+                result = result.replace(placeholder, replacement);
             }
+            // System.out.println("LEAVE substituteField (String): " + result);
             return result;
         }
-        // If your value types might be arrays/maps etc., you could recursively implement those here too
+        if (field instanceof List<?> list) {
+            // Recursively process each element
+            List<Object> result = list.stream()
+                    .map(elem -> substituteField(elem, params))
+                    .toList();
+            // System.out.println("LEAVE substituteField (List): " + result);
+            return result;
+        }
+        // Optionally, handle maps recursively if your data may have them.
+        // if (field instanceof Map<?,?> map) { ... }
+
+        // System.out.println("LEAVE substituteField (Other): " + field);
         return field;
     }
 }

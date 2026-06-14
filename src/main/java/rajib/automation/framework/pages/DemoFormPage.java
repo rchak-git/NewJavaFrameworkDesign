@@ -1,6 +1,6 @@
 package rajib.automation.framework.pages;
 
-
+/*
 
 import rajib.automation.framework.base.BasePage;
 import rajib.automation.framework.codegen.schema.LocatorSchema;
@@ -124,3 +124,6 @@ public class DemoFormPage extends BasePage {
 
     }
 }
+
+
+ */

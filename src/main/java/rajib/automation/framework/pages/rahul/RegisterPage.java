@@ -1,4 +1,4 @@
-package rajib.automation.framework.pages.rahul;
+/*package rajib.automation.framework.pages.rahul;
 
 import rajib.automation.framework.base.BasePage;
 import rajib.automation.framework.model.PageField;
@@ -106,7 +106,7 @@ public class RegisterPage extends BasePage {
                         "male",
                         "css",
                         "input[type='radio'][value='Male']",
-                        FieldType.RADIO,
+                        FieldType.RADIOGROUP,
                         "male"
                 )
         );
@@ -116,7 +116,7 @@ public class RegisterPage extends BasePage {
                         "female",
                         "css",
                         "input[type='radio'][value='Female']",
-                        FieldType.RADIO,
+                        FieldType.RADIOGROUP,
                         "female"
                 )
         );
@@ -127,3 +127,5 @@ public class RegisterPage extends BasePage {
 
     }
 }
+
+ */

@@ -15,6 +15,7 @@ public class TextBoxControl extends BaseControl {
         super(schema, resolver);
     }
 
+
     @Override
     public void populate(ControlCommand command) {
         String value = String.valueOf(command.getValue());

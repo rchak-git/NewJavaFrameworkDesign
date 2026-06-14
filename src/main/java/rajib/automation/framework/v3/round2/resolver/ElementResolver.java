@@ -22,6 +22,11 @@ public class ElementResolver {
         this.driver = driver;
     }
 
+
+    public WebDriver getDriver() {
+        return driver;
+    }
+
     // For single-locator fields
     public WebElement resolve(FieldSchema schema) {
         // Typical contract is "main" locator

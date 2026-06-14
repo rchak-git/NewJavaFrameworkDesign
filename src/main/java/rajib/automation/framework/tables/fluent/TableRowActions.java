@@ -1,4 +1,4 @@
-package rajib.automation.framework.tables.fluent;
+/*package rajib.automation.framework.tables.fluent;
 
 import rajib.automation.framework.codegen.schema.LocatorSchema;
 import rajib.automation.framework.tables.actions.TableActionExecutor;
@@ -65,4 +65,6 @@ public class TableRowActions {
 
     // action methods come in Step 2+
 }
+
+ */
 

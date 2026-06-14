@@ -12,12 +12,23 @@ public class ControlCommand {
     private final Object value;
     private final Object type; // Can be ValidationType, PopulationType, ActionType, etc.
 
+    private String waitForOption; // Null unless you want an option wait
+
     // Generic constructor: always provide action, field, value, and type (type may be null)
     public ControlCommand(ControlAction action, String fieldKey, Object value, Object type) {
         this.action = action;
         this.fieldKey = fieldKey;
         this.value = value;
         this.type = type;
+    }
+
+
+    public String getWaitForOption() {
+        return waitForOption;
+    }
+
+    public void setWaitForOption(String waitForOption) {
+        this.waitForOption = waitForOption;
     }
 
     // Convenience constructor for simple legacy POPULATE/VERIFY (no type needed)

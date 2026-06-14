@@ -1,5 +1,7 @@
 package rajib.automation.framework.codegen.schema;
 
+import rajib.automation.framework.v3.round2.ai.schema.models.LocatorSchema;
+
 import java.util.List;
 
 public record TableSchema(

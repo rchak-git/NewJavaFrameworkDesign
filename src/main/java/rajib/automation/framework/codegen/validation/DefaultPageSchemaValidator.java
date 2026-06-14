@@ -1,4 +1,6 @@
+/*
 package rajib.automation.framework.codegen.validation;
+
 
 import rajib.automation.framework.codegen.schema.PageSchema;
 
@@ -258,3 +260,5 @@ public class DefaultPageSchemaValidator implements PageSchemaValidator {
         return value == null || value.trim().isEmpty();
     }
 }
+
+ */

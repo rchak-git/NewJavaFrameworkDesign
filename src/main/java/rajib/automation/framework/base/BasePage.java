@@ -1,4 +1,4 @@
-package rajib.automation.framework.base;
+/*package rajib.automation.framework.base;
 
 import agent.FailureAnalysisAgent;
 import core.context.FailureContext;
@@ -29,6 +29,7 @@ import rajib.automation.framework.v2.context.RuntimeContext;
 import rajib.automation.framework.v2.resolver.ElementResolver;
 import rajib.automation.framework.v2.resolver.PageResolver;
 import rajib.automation.framework.v2.runtime.RuntimeValueResolver;
+import rajib.automation.framework.v3.round2.ai.schema.models.FieldSchema;
 import rajib.automation.framework.v3.verify.VerificationExecutor;
 import reporting.ReportManager;
 import org.openqa.selenium.NoSuchElementException;
@@ -65,11 +66,7 @@ public abstract class BasePage {
     }
 
 
-    protected Map<String, ComponentSchema> componentSchemas = new LinkedHashMap<>();
 
-    public Map<String, ComponentSchema> getComponentSchemas() {
-        return componentSchemas;
-    }
 
     protected Map<String, TableSchema> tableSchemaMap() {
         return Map.of(); // default: no tables on this page
@@ -154,6 +151,7 @@ public abstract class BasePage {
                 )
         );
     }
+
 
     public ComponentSchema getComponentOrThrow(String key) {
         ComponentSchema schema = componentSchemas.get(key);
@@ -275,6 +273,7 @@ public abstract class BasePage {
         }
     }
 
+    /*
     private void handleComponentVerification(
             ComponentSchema schema,
             WebElement root,
@@ -322,6 +321,8 @@ public abstract class BasePage {
             );
         }
     }
+
+
 
     protected final void initSchemas() {
 
@@ -382,10 +383,7 @@ public abstract class BasePage {
 
     private final Map<String, TableSchema> tableRegistry = new LinkedHashMap<>();
 
-    /**
-     * Registers table schemas discovered for this page.
-     * WT-1.3 only: store metadata; no execution.
-     */
+
     protected void registerTables(List<TableSchema> tables) {
         if (tables == null) return;
 
@@ -409,12 +407,12 @@ public abstract class BasePage {
         }
     }
 
-    /** Returns all registered tables for this page (read-only). */
+
     public Map<String, TableSchema> tables() {
         return Collections.unmodifiableMap(tableRegistry);
     }
 
-    /** Returns a table schema by key, if present. */
+
     public Optional<TableSchema> table(String key) {
         return Optional.ofNullable(tableRegistry.get(key));
     }
@@ -774,7 +772,7 @@ public abstract class BasePage {
                 }
             }
             break;
-            case RADIO: {
+            case RADIOGROUP: {
                 boolean select = Boolean.parseBoolean(resolvedValue);
                 if (!select) return;
 
@@ -998,11 +996,7 @@ public abstract class BasePage {
         }
     }
 
-    // ==================================================
-    // Existing utilities (unchanged)
-    // ==================================================
 
-    /*
     protected boolean isElementVisible(By locator) {
         try {
             return driver().findElement(locator).isDisplayed();
@@ -1011,7 +1005,7 @@ public abstract class BasePage {
         }
     }
 
-     */
+
     protected boolean isElementVisible(By locator) {
 
         List<WebElement> elements = driver().findElements(locator);
@@ -1125,3 +1119,4 @@ public abstract class BasePage {
     }
 
 }
+*/

@@ -1,4 +1,4 @@
-package rajib.automation.framework.pages.login;
+/*package rajib.automation.framework.pages.login;
 
 
 import org.openqa.selenium.By;
@@ -53,3 +53,5 @@ public class LoginPageManual extends BasePage {
 
 
 }
+
+ */
