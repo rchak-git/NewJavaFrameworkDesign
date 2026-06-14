@@ -64,5 +64,35 @@
         "main": { "type": "id", "value": "submit" }
       }
     }
+  ],
+  "tables": [
+    {
+      "key": "submissionDetailsTable",
+      "logicalName": "Submission Details",
+      "tableLocator": {
+        "strategy": "css",
+        "value": ".modal-content .table-responsive table"
+      },
+      "rowLocator": {
+        "strategy": "css",
+        "value": "tbody tr"
+      },
+      "cellLocator": {
+        "strategy": "css",
+        "value": "td"
+      },
+      "columns": [
+        {
+          "name": "Label",
+          "index": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "Values",
+          "index": 1,
+          "type": "TEXT"
+        }
+      ]
+    }
   ]
 }

@@ -21,7 +21,7 @@ public abstract class BaseControl implements Control {
     }
 
     protected String key() {
-        return schema.key;
+        return schema.getKey();
     }
 
     // ✅ ADD THESE (if not present)

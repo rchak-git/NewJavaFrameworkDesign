@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 import rajib.automation.framework.base.BaseTest;
 import rajib.automation.framework.v2.context.RuntimeContext;
 import rajib.automation.framework.v2.context.RuntimeContextHolder;
+import rajib.automation.framework.v3.round2.page.PracticeFormPage_v2;
 import rajib.automation.framework.v3.round2.testdatamodels.TestStepData;
 import rajib.automation.framework.v3.round2.utils.StepConverters;
 import rajib.automation.framework.v3.round2.engine.CommandDispatcherR2;
@@ -37,6 +38,35 @@ public class PracticeFormPageTest extends BaseTest {
     }
 
  */
+
+    @Test
+    public void testPracticeForm_validPopulationSubmitAndVerifyTable_v2() {
+        RuntimeContext context = RuntimeContextHolder.get();
+        driver.get("https://demoqa.com/automation-practice-form");
+
+        List<TestStepData> steps = TestDataLoaderR2.loadResolvedTestSteps(
+                "testdata/round2Data/PracticeFormTestData_v2.json",
+                "Test1_PopulateFourFieldsAndSubmitAndVerifyTable"
+        );
+
+        StepContext stepContext = new StepContext(
+                driver,
+                "testPracticeForm_validPopulationSubmitAndVerifyTable_v2",
+                ExtentTestManager.getTest()
+        );
+
+        List<ControlCommand> commands = steps.stream()
+                .map(StepConverters::fromTestStepData)
+                .toList();
+
+        PracticeFormPage_v2 formPage = new PracticeFormPage_v2(new ElementResolver(), context);
+
+        CommandDispatcherR2.executeAll(formPage, commands, stepContext);
+
+        System.out.println("Wait Here");
+    }
+
+
 @Test
 public void testPracticeForm_validPopulationAndSubmitExtent() {
     RuntimeContext context = RuntimeContextHolder.get();

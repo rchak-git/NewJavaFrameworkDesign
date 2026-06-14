@@ -34,7 +34,7 @@ public class ElementResolver {
 
         if (locator == null) {
             throw new IllegalStateException(
-                    "Locator is missing for field: " + schema.key
+                    "Locator is missing for field: " + schema.getKey()
             );
         }
         By by = toBy(locator);
@@ -46,7 +46,7 @@ public class ElementResolver {
         LocatorSchema locator = schema.locators.get(locatorKey);
         if (locator == null) {
             throw new IllegalStateException(
-                    "Locator '" + locatorKey + "' is missing for field: " + schema.key
+                    "Locator '" + locatorKey + "' is missing for field: " + schema.getKey()
             );
         }
         By by = toBy(locator);
