@@ -1,0 +1,24 @@
+[
+  {
+    "scenarioId": "ValidPaymentFormPopulation",
+    "steps": [
+      { "fieldKey": "customerName", "intent": "populate", "value": "${customerName}" },
+      { "fieldKey": "amount", "intent": "populate", "value": "${amount}" },
+      { "fieldKey": "scenario", "intent": "populate", "value": "${scenario}" }
+    ]
+  },
+  {
+    "testName": "Test1_CreatePaymentSmoke",
+    "scenario": [
+      {
+        "use": "ValidPaymentFormPopulation",
+        "parameters": {
+          "customerName": "Ravi",
+          "amount": "100.00",
+          "scenario": "SUCCESS"
+        }
+      },
+      { "fieldKey": "submit", "intent": "action", "actionType": "CLICK" }
+    ]
+  }
+]
