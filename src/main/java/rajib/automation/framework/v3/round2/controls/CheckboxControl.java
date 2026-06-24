@@ -15,47 +15,48 @@ public class CheckboxControl extends BaseControl {
         super(schema, resolver);
     }
 
+    private FieldSchema fieldSchema() {
+        return (FieldSchema) schema;
+    }
+
     @Override
     public void populate(ControlCommand command) {
         Object value = command.getValue();
 
         if (value instanceof Boolean boolVal) {
-            // Rare: use if the field is a single checkbox
             setChecked(boolVal);
         } else if (value instanceof String s) {
-            // "hobbies": "Sports"
             selectCheckboxOption(s, true);
         } else if (value instanceof List<?> list) {
-            // "hobbies": ["Sports", "Music"]
             for (Object v : list) {
                 if (v != null) {
                     selectCheckboxOption(String.valueOf(v), true);
                 }
             }
         } else if (value == null) {
-            // Do nothing or uncheck all (optional by your framework needs)
+            // no-op
         } else {
             throw new IllegalArgumentException("Unsupported value for checkbox: " + value + " (class: " + value.getClass() + ")");
         }
     }
 
-    // Helper for single-checkbox situations (rare for "grouped" case)
     protected void setChecked(boolean checked) {
-        WebElement checkbox = resolver.resolve(schema); // main locator by default
+        WebElement checkbox = resolver.resolve(fieldSchema());
         if (checkbox.isSelected() != checked) {
             checkbox.click();
         }
     }
 
-    // For group checkboxes, locate by the lower-cased, trimmed label (key in schema.locators)
     protected void selectCheckboxOption(String label, boolean checked) {
+        FieldSchema fieldSchema = fieldSchema();
         String normalizedLabel = label.trim().toLowerCase();
-        LocatorSchema locator = schema.locators.get(normalizedLabel);
+        LocatorSchema locator = fieldSchema.locators.get(normalizedLabel);
         if (locator == null) {
             throw new IllegalArgumentException("Locator not found for label: " + normalizedLabel
-                    + ". Available: " + schema.locators.keySet());
+                    + ". Available: " + fieldSchema.locators.keySet());
         }
-        WebElement checkbox = resolver.resolve(schema, normalizedLabel);
+
+        WebElement checkbox = resolver.resolve(fieldSchema, normalizedLabel);
         if (checkbox.isSelected() != checked) {
             checkbox.click();
         }
@@ -63,8 +64,7 @@ public class CheckboxControl extends BaseControl {
 
     @Override
     public Object read() {
-        // For a single checkbox, this makes sense. For a group, override as needed.
-        return resolveElement().isSelected();
+        return resolver.resolve(fieldSchema()).isSelected();
     }
 
     @Override

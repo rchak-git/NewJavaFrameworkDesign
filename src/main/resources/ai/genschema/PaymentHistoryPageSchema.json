@@ -1,0 +1,38 @@
+{
+  "pageName": "PaymentHistory",
+  "pageUrl": "http://localhost:8080/payments",
+  "purpose": "Provides information about Payment History",
+  "fields": [
+    {
+      "key": "pageTitle",
+      "fieldType": "STATIC_TEXT",
+      "logicalName": "Payment History Title",
+      "locator": {
+        "strategy": "css",
+        "value": "h2"
+      }
+    }
+  ],
+  "tables": [
+    {
+      "key": "paymentsTable",
+      "fieldType": "TABLE",
+      "locator": {
+        "strategy": "css",
+        "value": "table"
+      },
+      "columns": [
+        { "key": "paymentId", "header": "Payment ID", "index": 1 },
+        { "key": "customerName", "header": "Customer Name", "index": 2 },
+        { "key": "amount", "header": "Amount", "index": 3 },
+        { "key": "scenario", "header": "Scenario", "index": 4 },
+        { "key": "status", "header": "Status", "index": 5 },
+        { "key": "createdAt", "header": "Created At", "index": 6 }
+      ],
+      "metadata": {
+        "identifierColumn": "paymentId",
+        "rowSelector": "tbody tr"
+      }
+    }
+  ]
+}

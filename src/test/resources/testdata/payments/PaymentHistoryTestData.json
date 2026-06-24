@@ -1,0 +1,33 @@
+[
+  {
+    "scenarioId": "ValidPaymentHistoryVerification",
+    "steps": [
+      {
+        "fieldKey": "paymentsTable",
+        "intent": "verify",
+        "expected": {
+          "paymentId": "${paymentId}",
+          "customerName": "${customerName}",
+          "amount": "${amount}",
+          "scenario": "${scenario}",
+          "status": "${status}"
+        }
+      }
+    ]
+  },
+  {
+    "testName": "Test1_VerifyCreatedPayment",
+    "scenario": [
+      {
+        "use": "ValidPaymentHistoryVerification",
+        "parameters": {
+          "paymentId": "P-1001",
+          "customerName": "Ravi",
+          "amount": "100.00",
+          "scenario": "SUCCESS",
+          "status": "COMPLETED"
+        }
+      }
+    ]
+  }
+]

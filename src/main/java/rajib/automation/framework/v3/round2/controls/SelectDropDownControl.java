@@ -14,13 +14,15 @@ public class SelectDropDownControl extends BaseControl {
         super(schema, resolver);
     }
 
+    private FieldSchema fieldSchema() {
+        return (FieldSchema) schema;
+    }
+
     @Override
     public void populate(ControlCommand command) {
         String value = String.valueOf(command.getValue());
-        WebElement element = resolveElement();
+        WebElement element = resolver.resolve(fieldSchema());
         Select select = new Select(element);
-
-        // Default behavior: select by visible text
         select.selectByVisibleText(value);
 
         System.out.println("POPULATE " + command.getFieldKey() + " = " + value);
@@ -59,7 +61,7 @@ public class SelectDropDownControl extends BaseControl {
 
     @Override
     public Object read() {
-        WebElement element = resolveElement();
+        WebElement element = resolver.resolve(fieldSchema());
         Select select = new Select(element);
         return select.getFirstSelectedOption().getText();
     }

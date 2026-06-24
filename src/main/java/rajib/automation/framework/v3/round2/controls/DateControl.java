@@ -16,36 +16,33 @@ public class DateControl extends BaseControl {
         super(schema, resolver);
     }
 
+    private FieldSchema fieldSchema() {
+        return (FieldSchema) schema;
+    }
+
     @Override
     public void populate(ControlCommand command) {
         Object valueObj = command.getValue();
         if (valueObj == null) return;
 
-        // Expected value of the form "1 Jan 2022" or "10 May 2026"
         String value = valueObj.toString().trim();
         String[] parts = value.split(" ");
         int day = Integer.parseInt(parts[0]);
-        String monthName = toFullMonthName(parts[1]); // ensures "Jan" → "January"
+        String monthName = toFullMonthName(parts[1]);
         int year = Integer.parseInt(parts[2]);
 
-        // 1. Open the calendar popup
-        WebElement input = resolver.resolve(schema);
+        WebElement input = resolver.resolve(fieldSchema());
         input.click();
 
-        // 2. Select year
         WebElement yearSelect = resolver.getDriver().findElement(By.cssSelector(".react-datepicker__year-select"));
         new Select(yearSelect).selectByVisibleText(String.valueOf(year));
 
-        // 3. Select month
         WebElement monthSelect = resolver.getDriver().findElement(By.cssSelector(".react-datepicker__month-select"));
         new Select(monthSelect).selectByVisibleText(monthName);
 
-        // 4. Pick the correct day using aria-label (robust and safe)
-        String daySuffix = getDaySuffix(day);       // "st", "nd", "rd", "th"
+        String daySuffix = getDaySuffix(day);
         String targetAria = String.format("%s %d%s, %d", monthName, day, daySuffix, year);
-        // ex: "January 1st, 2022"
 
-        // All day cells
         List<WebElement> days = resolver.getDriver().findElements(By.cssSelector(".react-datepicker__day"));
 
         boolean clicked = false;
@@ -64,7 +61,6 @@ public class DateControl extends BaseControl {
         }
     }
 
-    /** Converts short month like "Jan" or "SEP" or "December" to full month like "January" (case-insensitive) */
     private static String toFullMonthName(String m) {
         m = m.toLowerCase(Locale.ENGLISH);
         switch (m) {
@@ -80,18 +76,17 @@ public class DateControl extends BaseControl {
             case "oct": return "October";
             case "nov": return "November";
             case "dec": return "December";
-            // already full month name
-            case "january":   return "January";
-            case "february":  return "February";
-            case "march":     return "March";
-            case "april":     return "April";
-            case "june":      return "June";
-            case "july":      return "July";
-            case "august":    return "August";
+            case "january": return "January";
+            case "february": return "February";
+            case "march": return "March";
+            case "april": return "April";
+            case "june": return "June";
+            case "july": return "July";
+            case "august": return "August";
             case "september": return "September";
-            case "october":   return "October";
-            case "november":  return "November";
-            case "december":  return "December";
+            case "october": return "October";
+            case "november": return "November";
+            case "december": return "December";
         }
         throw new IllegalArgumentException("Unknown month: " + m);
     }
@@ -108,8 +103,7 @@ public class DateControl extends BaseControl {
 
     @Override
     public Object read() {
-        WebElement input = resolver.resolve(schema);
-        return input.getAttribute("value");
+        return resolver.resolve(fieldSchema()).getAttribute("value");
     }
 
     @Override

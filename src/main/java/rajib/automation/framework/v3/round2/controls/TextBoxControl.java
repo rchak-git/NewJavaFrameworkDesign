@@ -8,20 +8,21 @@ import rajib.automation.framework.v3.round2.control.ControlCommand;
 import rajib.automation.framework.v3.round2.resolver.ElementResolver;
 import rajib.automation.framework.v3.round2.utils.DriverActions;
 
-
 public class TextBoxControl extends BaseControl {
 
     public TextBoxControl(FieldSchema schema, ElementResolver resolver) {
         super(schema, resolver);
     }
 
+    private FieldSchema fieldSchema() {
+        return (FieldSchema) schema;
+    }
 
     @Override
     public void populate(ControlCommand command) {
         String value = String.valueOf(command.getValue());
-        WebElement element = resolveElement();
+        WebElement element = resolver.resolve(fieldSchema());
 
-        // Use DriverActions for robust input
         DriverActions.type(element, value);
 
         System.out.println("POPULATE " + command.getFieldKey() + " = " + value);
@@ -57,8 +58,9 @@ public class TextBoxControl extends BaseControl {
 
         System.out.println("VERIFY PASSED for " + command.getFieldKey());
     }
+
     @Override
     public Object read() {
-        return resolveElement().getAttribute("value");
+        return resolver.resolve(fieldSchema()).getAttribute("value");
     }
 }

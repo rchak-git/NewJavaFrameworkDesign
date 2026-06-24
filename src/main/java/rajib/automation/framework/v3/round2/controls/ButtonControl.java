@@ -8,25 +8,26 @@ import rajib.automation.framework.v3.round2.enums.ActionType;
 import rajib.automation.framework.v3.round2.resolver.ElementResolver;
 import rajib.automation.framework.v3.round2.utils.DriverActions;
 
-
 public class ButtonControl extends BaseControl {
 
     public ButtonControl(FieldSchema schema, ElementResolver resolver) {
         super(schema, resolver);
     }
 
+    private FieldSchema fieldSchema() {
+        return (FieldSchema) schema;
+    }
+
     @Override
     public void populate(ControlCommand command) {
-        // For a button, treat populate as 'click'
-        WebElement element = resolveElement();
+        WebElement element = resolver.resolve(fieldSchema());
         DriverActions.click(element);
         System.out.println("BUTTON CLICKED (populate): " + command.getFieldKey());
     }
 
     @Override
     public void verify(ControlCommand command) {
-        // Optionally, check button enabled/displayed state
-        WebElement element = resolveElement();
+        WebElement element = resolver.resolve(fieldSchema());
         if (!element.isDisplayed() || !element.isEnabled()) {
             throw new AssertionError("Button not interactable: " + command.getFieldKey());
         }
@@ -35,13 +36,12 @@ public class ButtonControl extends BaseControl {
 
     @Override
     public Object read() {
-        // Could return button text or state if needed
-        return resolveElement().getText();
+        return resolver.resolve(fieldSchema()).getText();
     }
 
     @Override
     public void doAction(ControlCommand command) {
-        WebElement element = resolveElement();
+        WebElement element = resolver.resolve(fieldSchema());
 
         ActionType actionType =
                 (command.getType() instanceof ActionType)
@@ -57,7 +57,6 @@ public class ButtonControl extends BaseControl {
                 DriverActions.doubleClick(element);
                 System.out.println("BUTTON 'doAction': DOUBLE_CLICK for " + command.getFieldKey());
             }
-            // Add other actions as necessary
             default -> throw new UnsupportedOperationException("Button does not support action: " + actionType);
         }
     }
