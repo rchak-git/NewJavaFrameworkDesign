@@ -1,9 +1,8 @@
 /*
 DEPRECATED: This class is no longer used in the current design.
-dynamic/context step normalization is now handled in StepConverters.
+Dynamic/context step normalization is now handled in StepConverters.
 TODO: Remove this class and its usages after confirming all scenarios are properly handled by StepConverters and CommandDispatcherR2.
- */
-
+*/
 
 package rajib.automation.framework.v3.round2.engine;
 
@@ -11,11 +10,13 @@ import rajib.automation.framework.enums.ValidationType;
 import rajib.automation.framework.v2.context.RuntimeContext;
 import rajib.automation.framework.v2.context.RuntimeContextHolder;
 import rajib.automation.framework.v3.round2.control.ControlCommand;
+import rajib.automation.framework.v3.round2.enums.ActionType;
 import rajib.automation.framework.v3.round2.enums.ControlAction;
 import rajib.automation.framework.v3.round2.enums.PopulationType;
-import rajib.automation.framework.v3.round2.enums.ActionType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ScenarioNormalizerR2 {
 
