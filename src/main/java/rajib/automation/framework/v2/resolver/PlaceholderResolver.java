@@ -2,7 +2,6 @@ package rajib.automation.framework.v2.resolver;
 
 import rajib.automation.framework.v2.context.RuntimeContext;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,41 +9,30 @@ import java.util.Map;
 public class PlaceholderResolver {
 
     /**
-     * Resolves placeholders in a TestData map using the ExecutionContext.
+     * Resolves placeholders in test data using the RuntimeContext.
      * Supports nested maps and lists.
      */
-    @SuppressWarnings("unchecked")
     public static Map<String, Object> resolve(
             Map<String, Object> rawData,
             RuntimeContext context
     ) {
-
-        Map<String, Object> resolved = new LinkedHashMap<>();;
+        Map<String, Object> resolved = new LinkedHashMap<>();
 
         for (Map.Entry<String, Object> entry : rawData.entrySet()) {
-            resolved.put(
-                    entry.getKey(),
-                    resolveValue(entry.getValue(), context)
-            );
+            resolved.put(entry.getKey(), resolveValue(entry.getValue(), context));
         }
 
         return resolved;
     }
 
     private static Object resolveValue(Object value, RuntimeContext context) {
-
         if (value instanceof String s) {
             return resolveString(s, context);
         }
 
         if (value instanceof Map<?, ?> map) {
-            Map<String, Object> resolvedMap = new HashMap<>();
-            map.forEach((k, v) ->
-                    resolvedMap.put(
-                            String.valueOf(k),
-                            resolveValue(v, context)
-                    )
-            );
+            Map<String, Object> resolvedMap = new LinkedHashMap<>();
+            map.forEach((k, v) -> resolvedMap.put(String.valueOf(k), resolveValue(v, context)));
             return resolvedMap;
         }
 
@@ -54,19 +42,16 @@ public class PlaceholderResolver {
                     .toList();
         }
 
-        // numbers, booleans, null → unchanged
         return value;
     }
 
     private static Object resolveString(String value, RuntimeContext context) {
-
         if (isPlaceholder(value)) {
             String key = extractKey(value);
 
             if (!context.contains(key)) {
-                throw new RuntimeException(
-                        "Unresolved placeholder '" + value +
-                                "'. No value found in ExecutionContext."
+                throw new IllegalArgumentException(
+                        "Unresolved placeholder '" + value + "'. No value found in RuntimeContext."
                 );
             }
 
@@ -77,12 +62,10 @@ public class PlaceholderResolver {
     }
 
     private static boolean isPlaceholder(String value) {
-        return value.startsWith("<")
-                && value.endsWith(">")
-                && value.length() > 2;
+        return value != null && value.startsWith("${") && value.endsWith("}") && value.length() > 3;
     }
 
     private static String extractKey(String placeholder) {
-        return placeholder.substring(1, placeholder.length() - 1);
+        return placeholder.substring(2, placeholder.length() - 1);
     }
 }
