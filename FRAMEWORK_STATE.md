@@ -115,6 +115,10 @@ These are known and intentionally not treated as framework defects right now:
    - make widget-specific keyword processing more plug-in like
 5. **Investigate Maven build alignment separately if needed**
    - only if `mvn clean test` continues to fail locally
+6. **Future backlog: Scenario Flow abstraction**
+   - evaluate a higher-level flow layer that composes reusable scenarios from multiple test data files into multi-page business journeys
+   - implement only if it clearly improves readability, reuse, maintainability, and debugging clarity over the current step/scenario model
+   - keep the current rule that flow orchestration should remain outside the core runtime until its benefit is proven
 
 ---
 
