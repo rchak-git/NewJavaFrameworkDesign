@@ -7,10 +7,10 @@
 
 ## 📌 Current Status (Stable Milestone)
 
-**As of:** <add date if you like>
+**As of:** 2026-06-29
 
-The framework has reached a **clean, stable checkpoint**.  
-Core TestData and Table Verification architecture is complete and validated.
+The framework has reached a **clean, stable checkpoint** for the current round2 architecture.  
+The command pipeline now supports keyword-extensible verification through a generic attribute model, and table verification has been validated end-to-end.
 
 This document exists to:
 - prevent loss of context during pauses
@@ -23,91 +23,98 @@ This document exists to:
 ## ✅ Completed Work
 
 ### TestData Model
-- Introduced structured TestData model under `model.testdata`
-- One test case identified by:
-    - `name` (test scope)
-- Table verifications identified by:
-    - `id` (verification intent)
-- Test cases may contain:
-    - atomic/composite page field data only
-    - table verification data only
-    - both (mixed tests)
+- Introduced structured `TestStepData` under `v3.round2.testdatamodels`
+- One test step identified by:
+  - `fieldKey`
+  - `intent`
+- Step data may contain:
+  - `value`
+  - `expected`
+  - `matchBy`
+  - `validationType`
+  - `actionType`
+  - `populationType`
+
+### Generic Command Pipeline
+- `StepConverters` translates `TestStepData` into `ControlCommand`
+- `ControlCommand` now carries:
+  - stable core fields: `action`, `fieldKey`, `value`, `type`
+  - extensible `attributes` map for keyword-specific data
+- This reduces the need to keep adding hardwired fields to the core command model
 
 ### Table Verification Pipeline (End-to-End)
-- `TableVerificationLoader`
-    - Loads by `testCaseName + tableVerificationId`
-    - Fail-fast behavior
-- `TableJsonVerifier`
-    - Owns all verification behavior
-    - No logic inside model classes
+- `TableControl`
+  - reads table rows into structured maps
+  - uses `matchBy` to find the target row
+  - uses `expected` to verify the row contents
 - Verified assertion types:
-    - `EQUALS`
-    - `CONTAINS`
+  - `DEFAULT` → treated as text equality
+  - `TEXT_EQUALS`
+  - `STATIC_TEXT`
+  - `TEXT_CONTAINS`
 
-### Execution Flow (Locked)
-1. Load TestData root
-2. Select TestCase by `name`
-3. Select table verification by `id`
-4. Resolve table via `tableKey`
-5. Resolve row via match criteria
-6. Assert using verifier logic
+### Loader / Expansion Flow
+- `TestDataLoaderR2`
+  - loads scenario definitions by `scenarioId`
+  - expands test cases by `testName`
+  - supports parameter substitution for nested data
+  - now resolves nested map values such as `matchBy`
 
 ### Proof of Stability
-- End-to-end tests passing using:
-    - `DemoFormPage.json`
-    - Standard HTML tables
-    - Custom grid tables
-- `CONTAINS` assertion validated successfully
+- Payment table verification passed after the round2 pipeline alignment was fixed
+- The issue was caused by stale compiled classes in the IDE, resolved by rebuilding the project
+- The current end-to-end flow is now validated:
+  1. JSON
+  2. `TestStepData`
+  3. `TestDataLoaderR2`
+  4. `StepConverters`
+  5. `ControlCommand`
+  6. `TableControl`
 
 ---
 
-## 🔒 Locked Design Decisions (Do Not Revisit Lightly)
+## 🔒 Standards / Business Rules (Keep These Stable)
 
-- **Model classes are passive**
-    - No behavior inside TestData models
-- **Behavior lives in executors/verifiers**
-- **One test case = one `name`**
-- **Multiple table verifications allowed per test case**
-- **Table selection uses `id`, not name duplication**
-- **Explicit is better than implicit**
-    - No auto-inference of test data
-
----
-
-## ⚠ Known Pain Points (Captured, Not Solved Yet)
-
-These are acknowledged and intentionally deferred:
-
-- Raw JSON authoring is not user-friendly
-- Easy to introduce syntax errors manually
-- Loader error messages can be improved
-- No authoring aids for end users yet
+- **Keep the core pipeline generic**
+  - do not add a new hardwired field to the command model for every keyword
+- **Keyword-specific data belongs in `ControlCommand.attributes`**
+  - controls interpret the attributes they understand
+- **Behavior stays in executors / controls, not in model classes**
+  - models should remain passive data carriers
+- **Explicit data mapping is preferred over inference**
+  - no hidden guessing or automatic reinterpretation of unrelated fields
+- **Table verification must separate row selection from row assertion**
+  - `matchBy` identifies the row
+  - `expected` verifies the selected row
+- **Stability over shortcut fixes**
+  - if a change reveals a recurring pattern, prefer the structural fix over a one-off patch
 
 ---
 
-## 🔥 Backlog Burner (Future Enhancements)
+## ⚠ Known Notes / Gaps
 
-Not for immediate implementation:
+These are known and intentionally not treated as framework defects right now:
 
-1. **TestDataBuilder utilities**
-    - Java-based fluent builders to generate valid TestData
-    - Reduce direct JSON authoring
-2. **Improved loader diagnostics**
-    - Friendly, contextual error messages
-3. **TestData templates / examples**
-4. **Optional YAML support**
-5. **Long-term ideas**
-    - Excel → TestData bridge
-    - UI-based authoring (very long term)
+- `mvn clean test` may still need separate environment troubleshooting
+  - possible JDK / Maven alignment issue
+  - possible local dependency or workspace build-state issue
+- IDE rebuild may be needed if stale compiled classes are suspected
+- The keyword-attribute model is in place, but there is not yet a formal handler registry for all future widgets/keywords
 
 ---
 
-## 🧭 Planned Next Phases (When Resumed)
+## 🧭 Planned Next Steps
 
-1. TestData usability layer (builders/helpers)
-2. Documentation of TestData contract
-3. Optional discussion: method-scoped TestData
-4. Framework ergonomics (not core redesign)
+1. **Validate the keyword-attribute pattern with another complex widget**
+   - confirm the current design scales beyond tables
+2. **Define a lightweight keyword handling convention**
+   - decide which data belongs in core fields vs attributes
+3. **Document the round2 step contract**
+   - clarify how test data should be authored for populate / verify / action steps
+4. **Optional future enhancement: keyword handler registry**
+   - make widget-specific keyword processing more plug-in like
+5. **Investigate Maven build alignment separately if needed**
+   - only if `mvn clean test` continues to fail locally
 
 ---
 
@@ -116,8 +123,9 @@ Not for immediate implementation:
 When returning after a pause:
 
 1. Read this file (`FRAMEWORK_STATE.md`)
-2. Re-run DemoFormPage table verification tests
-3. Start with TestData usability (not core changes)
+2. Re-run the payment table verification test
+3. Confirm the same pipeline behavior still holds
+4. Add the next complex widget only after the current contract stays stable
 
 ---
 
