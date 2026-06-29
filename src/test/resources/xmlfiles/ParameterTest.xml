@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="Regression Suite" parallel="false">
+    <test name="Round2 Feature Tests">
+        <parameter name="url" value="Rajib"></parameter>
+        <parameter name="username" value="Rajib"></parameter>
+        <classes>
+            <class name="rajib.automation.framework.tests.smoke.SmokTest" />
+        </classes>
+    </test>
+</suite>

@@ -37,21 +37,29 @@ public class TableControl extends BaseControl {
     public void verify(ControlCommand command) {
         List<Map<String, String>> rows = readAsRows();
 
-        Object expectedValue = command.getValue();
+        Object matchByValue = command.getAttribute("matchBy");
+        Object expectedValue = command.getAttribute("expected");
+
+        if (expectedValue == null) {
+            expectedValue = command.getValue();
+        }
+
         if (expectedValue == null) {
             throw new IllegalArgumentException(
                     "VERIFY command for table '" + key() + "' requires expected value(s)."
             );
         }
 
-        Map<String, Object> expectedMap = normalizeExpected(expectedValue);
+        Map<String, Object> matchByMap = matchByValue != null ? normalizeMap(matchByValue) : Map.of();
+        Map<String, Object> expectedMap = normalizeMap(expectedValue);
         ValidationType validationType = extractValidationType(command);
 
-        boolean matched = rows.stream().anyMatch(row -> rowMatches(row, expectedMap, validationType));
+        boolean matched = rows.stream().anyMatch(row -> rowMatches(row, matchByMap, expectedMap, validationType));
 
         if (!matched) {
             throw new AssertionError(
-                    "No matching row found in table '" + key() + "'. Expected: " + expectedMap +
+                    "No matching row found in table '" + key() + "'. matchBy=" + matchByMap +
+                            ", expected=" + expectedMap +
                             ", validationType=" + validationType +
                             ", actualRows=" + rows
             );
@@ -120,8 +128,8 @@ public class TableControl extends BaseControl {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, Object> normalizeExpected(Object expectedValue) {
-        if (expectedValue instanceof Map<?, ?> map) {
+    private Map<String, Object> normalizeMap(Object value) {
+        if (value instanceof Map<?, ?> map) {
             Map<String, Object> normalized = new LinkedHashMap<>();
             for (Map.Entry<?, ?> entry : map.entrySet()) {
                 normalized.put(String.valueOf(entry.getKey()), entry.getValue());
@@ -131,20 +139,29 @@ public class TableControl extends BaseControl {
 
         throw new IllegalArgumentException(
                 "Expected table verification value must be a Map<String, Object> for table '" + key() + "'. " +
-                        "Received: " + expectedValue.getClass().getName()
+                        "Received: " + value.getClass().getName()
         );
     }
 
     private boolean rowMatches(
             Map<String, String> actualRow,
+            Map<String, Object> matchByRow,
             Map<String, Object> expectedRow,
             ValidationType validationType
     ) {
+        for (Map.Entry<String, Object> matchEntry : matchByRow.entrySet()) {
+            String columnKey = matchEntry.getKey();
+            String expected = matchEntry.getValue() == null ? null : String.valueOf(matchEntry.getValue());
+            String actual = actualRow.get(columnKey);
+            if (!matches(actual, expected, validationType)) {
+                return false;
+            }
+        }
+
         for (Map.Entry<String, Object> expectedEntry : expectedRow.entrySet()) {
             String columnKey = expectedEntry.getKey();
             String expected = expectedEntry.getValue() == null ? null : String.valueOf(expectedEntry.getValue());
             String actual = actualRow.get(columnKey);
-
             if (!matches(actual, expected, validationType)) {
                 return false;
             }

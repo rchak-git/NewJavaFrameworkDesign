@@ -16,6 +16,7 @@ This document exists to:
 - prevent loss of context during pauses
 - make resumption effortless
 - record key design decisions
+- define canonical framework standards
 - guide future phases intentionally
 
 ---
@@ -74,56 +75,70 @@ This document exists to:
 
 ---
 
-## ⚠ Known Pain Points (Captured, Not Solved Yet)
+## 🧩 Canonical Round2 Contract
 
-These are acknowledged and intentionally deferred:
+These rules define how Round2 step execution must behave.
 
-- Raw JSON authoring is not user-friendly
-- Easy to introduce syntax errors manually
-- Loader error messages can be improved
-- No authoring aids for end users yet
+### Placeholder Syntax
+- Use only:
+    - `${name}`
+- No alternate placeholder styles are supported in the canonical design.
+
+### Step Contract
+- `POPULATE` steps must use:
+    - `value`
+- `VERIFY` steps must use:
+    - `expected`
+- `ACTION` steps must use:
+    - `actionType`
+
+### Placeholder Resolution Rule
+- Placeholder resolution must happen **before** control execution.
+- Controls must never parse or resolve placeholders themselves.
+- A single shared resolver must handle both `value` and `expected`.
+
+### Supported Data Shapes
+The resolver must support recursive resolution for:
+- `String`
+- `Map`
+- `List`
+- nested combinations of these
+
+### Resolution Source
+Placeholders must resolve from runtime execution context, which may include:
+- scenario parameters
+- generated values
+- previously stored values
+- shared execution state
+
+### Control Boundary Rule
+Controls are responsible only for:
+- populate
+- verify
+- action
+- read
+
+Controls are **not** responsible for:
+- placeholder substitution
+- scenario parameter interpolation
+- test data interpretation
+
+### Table Verification Rule
+- Table verification steps must provide expected row data as a map/object.
+- Table controls must receive already-resolved values.
+- Verification logic compares actual rows against resolved expected rows only.
 
 ---
 
-## 🔥 Backlog Burner (Future Enhancements)
+## 🧩 Updated Placeholder and Runtime Value Contract
 
-Not for immediate implementation:
+The framework now distinguishes between authoring-time placeholders and runtime-context references.
 
-1. **TestDataBuilder utilities**
-    - Java-based fluent builders to generate valid TestData
-    - Reduce direct JSON authoring
-2. **Improved loader diagnostics**
-    - Friendly, contextual error messages
-3. **TestData templates / examples**
-4. **Optional YAML support**
-5. **Long-term ideas**
-    - Excel → TestData bridge
-    - UI-based authoring (very long term)
+### Supported value forms
 
----
+#### 1. Literal
+A plain JSON value is used as-is.
 
-## 🧭 Planned Next Phases (When Resumed)
-
-1. TestData usability layer (builders/helpers)
-2. Documentation of TestData contract
-3. Optional discussion: method-scoped TestData
-4. Framework ergonomics (not core redesign)
-
----
-
-## ▶ How to Resume Framework Work
-
-When returning after a pause:
-
-1. Read this file (`FRAMEWORK_STATE.md`)
-2. Re-run DemoFormPage table verification tests
-3. Start with TestData usability (not core changes)
-
----
-
-## 🧠 Guiding Principle
-
-> The DeanRaj Framework prioritizes **clarity, correctness, and learning**  
-> over speed, shortcuts, or premature tooling.
-
-This framework is a long-running collaboration and learning artifact.
+Example:
+```json
+"status": "COMPLETED"

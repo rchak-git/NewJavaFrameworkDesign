@@ -25,6 +25,10 @@ public class TestDataLoaderR2 {
         }
     }
 
+    private static Map<String, Object> normalizeStepMap(Map<String, Object> stepMap) {
+        return new LinkedHashMap<>(stepMap);
+    }
+
     // Index all scenario definitions in the file (call this ONCE before running tests).
     private static void indexScenarios(String fileName) {
         scenarioMap.clear();
@@ -33,6 +37,7 @@ public class TestDataLoaderR2 {
                 String scenarioId = (String) entry.get("scenarioId");
                 List<Map<String, Object>> rawSteps = (List<Map<String, Object>>) entry.get("steps");
                 List<TestStepData> steps = rawSteps.stream()
+                        .map(TestDataLoaderR2::normalizeStepMap)
                         .map(stepMap -> mapper.convertValue(stepMap, TestStepData.class))
                         .collect(Collectors.toList());
                 scenarioMap.put(scenarioId, steps);
@@ -42,35 +47,35 @@ public class TestDataLoaderR2 {
 
     // Loads and expands one test case (by testName) with all included scenario steps and parameter substitution.
     public static List<TestStepData> loadResolvedTestSteps(String fileName, String testName) {
-        // First, index scenarios
         indexScenarios(fileName);
 
         for (Map<String, Object> entry : loadAllEntries(fileName)) {
             if (testName.equals(entry.get("testName"))) {
                 List<TestStepData> resolvedSteps = new ArrayList<>();
 
-                List<Object> scenarioList = (List<Object>) entry.get("scenario"); // Each step/inclusion is a Map here
+                List<Object> scenarioList = (List<Object>) entry.get("scenario");
 
                 for (Object obj : scenarioList) {
                     Map<String, Object> stepMap = (Map<String, Object>) obj;
+
                     if (stepMap.containsKey("use")) {
-                        // This is a scenario inclusion
                         String useScenarioId = (String) stepMap.get("use");
                         Map<String, Object> parameters = stepMap.get("parameters") != null
                                 ? (Map<String, Object>) stepMap.get("parameters")
                                 : Collections.emptyMap();
+
                         List<TestStepData> includedSteps = scenarioMap.get(useScenarioId);
-                        if (includedSteps == null)
+                        if (includedSteps == null) {
                             throw new RuntimeException("ScenarioId not found: " + useScenarioId);
+                        }
+
                         for (TestStepData incStep : includedSteps) {
-                            // Only include this step if: (A) It's not a parameterized value/expected, or (B) if the referenced parameter is present
                             if (shouldIncludeStep(incStep, parameters)) {
                                 resolvedSteps.add(substituteParams(incStep, parameters));
                             }
                         }
                     } else {
-                        // This is a manual, hardcoded step
-                        TestStepData directStep = mapper.convertValue(stepMap, TestStepData.class);
+                        TestStepData directStep = mapper.convertValue(normalizeStepMap(stepMap), TestStepData.class);
                         resolvedSteps.add(directStep);
                     }
                 }
@@ -82,48 +87,66 @@ public class TestDataLoaderR2 {
 
     // Helper: Only include the step if all placeholders are present in the data
     private static boolean shouldIncludeStep(TestStepData step, Map<String, Object> parameters) {
-        // For value
-        if (step.value() instanceof String valueStr && isPlaceholder(valueStr)) {
-            String key = extractPlaceholderName(valueStr);
-            return parameters.containsKey(key);
+        return containsOnlyResolvablePlaceholders(step.value(), parameters)
+                && containsOnlyResolvablePlaceholders(step.expected(), parameters)
+                && containsOnlyResolvablePlaceholders(step.matchBy(), parameters);
+    }
+
+    private static boolean containsOnlyResolvablePlaceholders(Object field, Map<String, Object> parameters) {
+        if (field == null) return true;
+
+        if (field instanceof String str) {
+            if (isPlaceholder(str)) {
+                String key = extractPlaceholderName(str);
+                return parameters.containsKey(key);
+            }
+            return true;
         }
-        // For expected
-        if (step.expected() instanceof String expectedStr && isPlaceholder(expectedStr)) {
-            String key = extractPlaceholderName(expectedStr);
-            return parameters.containsKey(key);
+
+        if (field instanceof Map<?, ?> map) {
+            for (Object value : map.values()) {
+                if (!containsOnlyResolvablePlaceholders(value, parameters)) {
+                    return false;
+                }
+            }
+            return true;
         }
-        // Not a parameterized step, always include (hardcoded)
+
+        if (field instanceof List<?> list) {
+            for (Object item : list) {
+                if (!containsOnlyResolvablePlaceholders(item, parameters)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         return true;
     }
 
-    // Returns true if string is exactly "${param}"
     private static boolean isPlaceholder(String str) {
         return str != null && str.startsWith("${") && str.endsWith("}") && str.length() > 3;
     }
 
-    // Extracts the param name from "${param}"
     private static String extractPlaceholderName(String str) {
         return str.substring(2, str.length() - 1);
     }
 
-    // Substitute all parameter occurrences in a TestStepData
     public static TestStepData substituteParams(TestStepData step, Map<String, Object> params) {
         return new TestStepData(
                 step.fieldKey(),
                 step.intent(),
                 substituteField(step.value(), params),
                 substituteField(step.expected(), params),
+                substituteField(step.matchBy(), params),
                 step.validationType(),
                 step.actionType(),
                 step.populationType()
         );
     }
 
-    // Replace ${var} in an Object (usually String) with params.get(var)
     private static Object substituteField(Object field, Map<String, Object> params) {
         if (field == null || params == null) return field;
-        // Debug print (optional)
-        // System.out.println("ENTER substituteField: type=" + field.getClass() + ", value=" + field);
 
         if (field instanceof String str) {
             String result = str;
@@ -140,21 +163,23 @@ public class TestDataLoaderR2 {
                 }
                 result = result.replace(placeholder, replacement);
             }
-            // System.out.println("LEAVE substituteField (String): " + result);
             return result;
         }
+
+        if (field instanceof Map<?, ?> map) {
+            Map<String, Object> resolved = new LinkedHashMap<>();
+            for (Map.Entry<?, ?> entry : map.entrySet()) {
+                resolved.put(String.valueOf(entry.getKey()), substituteField(entry.getValue(), params));
+            }
+            return resolved;
+        }
+
         if (field instanceof List<?> list) {
-            // Recursively process each element
-            List<Object> result = list.stream()
+            return list.stream()
                     .map(elem -> substituteField(elem, params))
                     .toList();
-            // System.out.println("LEAVE substituteField (List): " + result);
-            return result;
         }
-        // Optionally, handle maps recursively if your data may have them.
-        // if (field instanceof Map<?,?> map) { ... }
 
-        // System.out.println("LEAVE substituteField (Other): " + field);
         return field;
     }
 }

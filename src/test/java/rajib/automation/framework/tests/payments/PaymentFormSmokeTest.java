@@ -47,7 +47,7 @@ public class PaymentFormSmokeTest extends BaseTest {
 
         PaymentFormPage_v1 formPage = new PaymentFormPage_v1(new ElementResolver(driver), context);
 
-        CommandDispatcherR2.executeAll(formPage, commands, stepContext);
+        CommandDispatcherR2.execute(formPage, commands, stepContext);
 
         assertTrue(
                 driver.getCurrentUrl().contains("/payments"),
@@ -71,7 +71,7 @@ public class PaymentFormSmokeTest extends BaseTest {
 
         StepContext stepContext = new StepContext(
                 driver,
-                "testPaymentForm_validPopulationAndSubmit_v1",
+                "testPaymentForm_validPopulationAndSubmit_v2",
                 ExtentTestManager.getTest()
         );
 
@@ -80,7 +80,7 @@ public class PaymentFormSmokeTest extends BaseTest {
                 .toList();
 
         PaymentFormPage_v1 formPage = new PaymentFormPage_v1(new ElementResolver(driver), context);
-        CommandDispatcherR2.executeAll(formPage, commands, stepContext);
+        CommandDispatcherR2.execute(formPage, commands, stepContext);
 
         assertTrue(
                 driver.getCurrentUrl().contains("/payments"),
@@ -97,7 +97,7 @@ public class PaymentFormSmokeTest extends BaseTest {
                 .toList();
 
         PaymentHistoryPage historyPage = new PaymentHistoryPage(new ElementResolver(driver), context);
-        CommandDispatcherR2.executeAll(historyPage, historyCommands, stepContext);
+        CommandDispatcherR2.execute(historyPage, historyCommands, stepContext);
 
         System.out.println("Wait Here");
     }

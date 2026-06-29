@@ -11,6 +11,10 @@ public class PlaceholderResolver {
     /**
      * Resolves placeholders in test data using the RuntimeContext.
      * Supports nested maps and lists.
+     *
+     * Supported syntaxes:
+     * - ${name}  -> scenario / test-data substitution
+     * - RCTX{name} -> runtime-context lookup
      */
     public static Map<String, Object> resolve(
             Map<String, Object> rawData,
@@ -25,7 +29,7 @@ public class PlaceholderResolver {
         return resolved;
     }
 
-    private static Object resolveValue(Object value, RuntimeContext context) {
+    public static Object resolveValue(Object value, RuntimeContext context) {
         if (value instanceof String s) {
             return resolveString(s, context);
         }
@@ -46,26 +50,38 @@ public class PlaceholderResolver {
     }
 
     private static Object resolveString(String value, RuntimeContext context) {
-        if (isPlaceholder(value)) {
-            String key = extractKey(value);
-
+        if (isScenarioPlaceholder(value)) {
+            String key = extractKey(value, "${", "}");
             if (!context.contains(key)) {
                 throw new IllegalArgumentException(
                         "Unresolved placeholder '" + value + "'. No value found in RuntimeContext."
                 );
             }
+            return context.get(key);
+        }
 
+        if (isRuntimeContextReference(value)) {
+            String key = extractKey(value, "RCTX{", "}");
+            if (!context.contains(key)) {
+                throw new IllegalArgumentException(
+                        "Unresolved runtime-context reference '" + value + "'. No value found in RuntimeContext."
+                );
+            }
             return context.get(key);
         }
 
         return value;
     }
 
-    private static boolean isPlaceholder(String value) {
+    private static boolean isScenarioPlaceholder(String value) {
         return value != null && value.startsWith("${") && value.endsWith("}") && value.length() > 3;
     }
 
-    private static String extractKey(String placeholder) {
-        return placeholder.substring(2, placeholder.length() - 1);
+    private static boolean isRuntimeContextReference(String value) {
+        return value != null && value.startsWith("RCTX{") && value.endsWith("}") && value.length() > 6;
+    }
+
+    private static String extractKey(String placeholder, String prefix, String suffix) {
+        return placeholder.substring(prefix.length(), placeholder.length() - suffix.length());
     }
 }
