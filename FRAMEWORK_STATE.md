@@ -132,6 +132,15 @@ When returning after a pause:
 4. Add the next complex widget only after the current contract stays stable
 
 ---
+Future backlog: Internal Function Escape Hatch
+
+define a controlled mechanism for invoking framework-level handlers when the Test Data DSL cannot express an operation cleanly
+allow test data to declare an explicit internal function name plus parameters
+keep this as an intentional escape hatch, not a replacement for the DSL
+require registered handlers and clear logging for traceability and debugging
+use only for rare or unsupported cases such as special widget interactions, recovery steps, or framework utilities
+
+
 
 ## 🧠 Guiding Principle
 
