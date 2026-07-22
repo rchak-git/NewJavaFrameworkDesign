@@ -79,6 +79,10 @@ public class TestDataLoaderR2 {
                         resolvedSteps.add(directStep);
                     }
                 }
+                System.out.println("Resolved steps for testName=" + testName);
+                for (TestStepData step : resolvedSteps) {
+                    System.out.println(step);
+                }
                 return resolvedSteps;
             }
         }

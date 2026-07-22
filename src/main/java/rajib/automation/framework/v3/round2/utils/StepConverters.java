@@ -14,6 +14,7 @@ import java.util.Map;
 public class StepConverters {
 
     public static ControlCommand fromTestStepData(TestStepData step) {
+        System.out.println("Converting step: " + step);
         ControlAction action = ControlAction.valueOf(step.intent().toUpperCase());
         RuntimeContext context = RuntimeContextHolder.get();
 
@@ -26,6 +27,8 @@ public class StepConverters {
                 yield new ControlCommand(action, step.fieldKey(), resolvedValue);
             }
             case VERIFY -> {
+                System.out.println("VERIFY step.matchBy = " + step.matchBy());
+                System.out.println("VERIFY step.expected = " + step.expected());
                 Object resolvedExpected = PlaceholderResolver.resolve(
                         Map.of("expected", step.expected()),
                         context
@@ -35,7 +38,8 @@ public class StepConverters {
                 if (valTypeStr != null && !valTypeStr.isEmpty()) {
                     valType = ValidationType.valueOf(valTypeStr);
                 }
-
+                System.out.println("VERIFY step.matchBy = " + step.matchBy());
+                System.out.println("VERIFY step.expected = " + step.expected());
                 Map<String, Object> attributes = new LinkedHashMap<>();
                 if (step.matchBy() != null) {
                     attributes.put("matchBy", PlaceholderResolver.resolve(
@@ -44,7 +48,7 @@ public class StepConverters {
                     ).get("matchBy"));
                 }
                 attributes.put("expected", resolvedExpected);
-
+                System.out.println("Built VERIFY command attributes = " + attributes);
                 yield new ControlCommand(action, step.fieldKey(), resolvedExpected, valType, attributes);
             }
             case ACTION -> {

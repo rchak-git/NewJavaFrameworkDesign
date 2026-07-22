@@ -11,7 +11,9 @@ import rajib.automation.framework.v3.round2.enums.ControlAction;
 import rajib.automation.framework.v3.round2.page.BasePageR2;
 import reporting.StepReporter;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CommandDispatcherR2 {
 
@@ -39,7 +41,8 @@ public class CommandDispatcherR2 {
                 case VERIFY -> control.verify(resolvedCommand);
                 case ACTION -> control.doAction(resolvedCommand);
                 default -> throw new UnsupportedOperationException(
-                        "Unknown ControlAction: " + action);
+                        "Unknown ControlAction: " + action
+                );
             }
 
             long duration = System.currentTimeMillis() - start;
@@ -57,13 +60,30 @@ public class CommandDispatcherR2 {
         Object resolvedValue = PlaceholderResolver.resolveValue(command.getValue(), runtimeContext);
         Object resolvedType = PlaceholderResolver.resolveValue(command.getType(), runtimeContext);
 
+        Map<String, Object> resolvedAttributes = resolveAttributes(command.getAttributes(), runtimeContext);
+
         ControlCommand resolved = new ControlCommand(
                 command.getAction(),
                 command.getFieldKey(),
                 resolvedValue,
-                resolvedType
+                resolvedType,
+                resolvedAttributes
         );
         resolved.setWaitForOption(command.getWaitForOption());
+        return resolved;
+    }
+
+    private static Map<String, Object> resolveAttributes(Map<String, Object> attributes, RuntimeContext runtimeContext) {
+        Map<String, Object> resolved = new LinkedHashMap<>();
+        if (attributes == null) {
+            return resolved;
+        }
+
+        for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+            Object resolvedValue = PlaceholderResolver.resolveValue(entry.getValue(), runtimeContext);
+            resolved.put(entry.getKey(), resolvedValue);
+        }
+
         return resolved;
     }
 

@@ -35,6 +35,9 @@ public class TableControl extends BaseControl {
 
     @Override
     public void verify(ControlCommand command) {
+        System.out.println("Table verify command attributes = " + command.getAttributes());
+        System.out.println("Table verify matchBy = " + command.getAttribute("matchBy"));
+        System.out.println("Table verify expected = " + command.getAttribute("expected"));
         List<Map<String, String>> rows = readAsRows();
 
         Object matchByValue = command.getAttribute("matchBy");

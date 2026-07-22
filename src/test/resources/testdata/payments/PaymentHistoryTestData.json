@@ -11,7 +11,7 @@
           "scenario": "SUCCESS"
         },
         "expected": {
-          "status": "COMPLETED"
+          "status": "SUCCESS"
         }
       }
     ]

@@ -120,7 +120,8 @@ These are known and intentionally not treated as framework defects right now:
    - implement only if it clearly improves readability, reuse, maintainability, and debugging clarity over the current step/scenario model
    - keep the current rule that flow orchestration should remain outside the core runtime until its benefit is proven
 
----
+---Backlog: Preserve control command attributes in dispatcher
+CommandDispatcherR2.resolveCommand(...) currently rebuilds a new ControlCommand with only action, fieldKey, value, and type, which drops attributes such as matchBy before verification reaches TableControl. Update the dispatcher to carry forward and resolve the full attributes map so verification commands keep their matching context end-to-end. Add a regression check for a VERIFY step using matchBy to prevent this from breaking again.
 
 ## ▶ How to Resume Framework Work
 
