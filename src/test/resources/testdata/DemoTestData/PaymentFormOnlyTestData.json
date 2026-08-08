@@ -1,0 +1,34 @@
+[
+  {
+    "scenarioId": "ValidPaymentFormPopulation",
+    "steps": [
+      { "fieldKey": "customerName", "intent": "populate", "value": "${customerName}" },
+      { "fieldKey": "amount", "intent": "populate", "value": "${amount}" },
+      { "fieldKey": "scenario", "intent": "populate", "value": "${scenario}" }
+    ]
+  },
+  {
+    "testName": "Test1_CreatePaymentFormOnly",
+    "scenario": [
+      {
+        "use": "ValidPaymentFormPopulation",
+        "parameters": {
+          "customerName": "Ravi",
+          "amount": "100.00",
+          "scenario": "SUCCESS"
+        }
+      },
+      {
+        "fieldKey": "customerName",
+        "intent": "verify",
+        "expected": "Ravi",
+        "validationType": "TEXT_EQUALS"
+      },
+      {
+        "fieldKey": "submit",
+        "intent": "action",
+        "actionType": "CLICK"
+      }
+    ]
+  }
+]
